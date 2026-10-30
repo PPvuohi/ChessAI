@@ -1,0 +1,7 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/ChessAI.slnx
+/ChessAI/obj
+/ChessAI/bin/Debug/net9.0-windows
