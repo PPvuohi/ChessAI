@@ -8,4 +8,34 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Graphics\black_bishop.png" />
+    <None Remove="Graphics\black_king.png" />
+    <None Remove="Graphics\black_knight.png" />
+    <None Remove="Graphics\black_pawn.png" />
+    <None Remove="Graphics\black_queen.png" />
+    <None Remove="Graphics\black_rook.png" />
+    <None Remove="Graphics\white_bishop.png" />
+    <None Remove="Graphics\white_king.png" />
+    <None Remove="Graphics\white_knight.png" />
+    <None Remove="Graphics\white_pawn.png" />
+    <None Remove="Graphics\white_queen.png" />
+    <None Remove="Graphics\white_rook.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Graphics\black_bishop.png" />
+    <Resource Include="Graphics\black_king.png" />
+    <Resource Include="Graphics\black_knight.png" />
+    <Resource Include="Graphics\black_pawn.png" />
+    <Resource Include="Graphics\black_queen.png" />
+    <Resource Include="Graphics\black_rook.png" />
+    <Resource Include="Graphics\white_bishop.png" />
+    <Resource Include="Graphics\white_king.png" />
+    <Resource Include="Graphics\white_knight.png" />
+    <Resource Include="Graphics\white_pawn.png" />
+    <Resource Include="Graphics\white_queen.png" />
+    <Resource Include="Graphics\white_rook.png" />
+  </ItemGroup>
+
 </Project>

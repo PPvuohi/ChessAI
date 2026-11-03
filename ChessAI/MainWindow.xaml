@@ -5,11 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ChessAI"
         mc:Ignorable="d"
+        Style="{StaticResource MainWindowStyle}"
         Title="Shakkiprofessori"
-        Height="750" Width="750">
+        Height="600" Width="750">
     <DockPanel>
         <ToolBarTray DockPanel.Dock="Top">
-            <ToolBar>
+            <ToolBar Width="750">
                 <Button Content="Uusi peli" Click="NewGame_Click"/>
                 <Button Content="Tallenna peli" Click="SaveGame_Click"/>
                 <Button Content="Lataa peli" Click="LoadGame_Click"/>
@@ -17,11 +18,11 @@
                 <Button Content="Asetukset" Click="Settings_Click"/>
             </ToolBar>
         </ToolBarTray>
-        <TextBlock x:Name="txbMoves" DockPanel.Dock="Right">
+        <TextBlock x:Name="txbMoves" DockPanel.Dock="Right" Margin="10">
             <Label Content="Siirrot näkyvät tässä"/>
         </TextBlock>
-        <Canvas>
-            <Label Content="Tähän tulee lauta" Canvas.Left="267" Canvas.Top="217"/>
+        <Canvas Margin="10" Width="500" Height="500">
+            <Label Content="Tähän tulee lauta" Canvas.Left="200" Canvas.Top="224"/>
         </Canvas>
     </DockPanel>
 </Window>
