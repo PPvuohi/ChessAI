@@ -47,7 +47,7 @@ namespace ChessAI
             Brush? darkSquareBrush = (Brush?)Application.Current.FindResource("DarkSquareBrush");
             if (lightSquareBrush == null || darkSquareBrush == null)
             {
-                MessageBox.Show("LightSquareBrush or DarkSquareBrush resource not found.");
+                MessageBox.Show("Taustaväriä LightSquareBrush ja/tai DarkSquareBrush ei ole määritelty.");
                 return;
             }
             for (int row = 0; row < 8; row++)
