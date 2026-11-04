@@ -1,5 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <SolidColorBrush x:Key="LightSquareBrush" Color="Beige"/>
+    <SolidColorBrush x:Key="DarkSquareBrush" Color="SaddleBrown"/>
     <Style x:Key="MainWindowStyle" TargetType="Window">
         <Setter Property="Background" Value="BurlyWood"/>
     </Style>

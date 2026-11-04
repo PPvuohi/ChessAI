@@ -6,8 +6,11 @@
         xmlns:local="clr-namespace:ChessAI"
         mc:Ignorable="d"
         Style="{StaticResource MainWindowStyle}"
+        ContentRendered="Window_ContentRendered"
         Title="Shakkiprofessori"
-        Height="600" Width="750">
+        Height="600"
+        SizeToContent="Width"
+        >
     <DockPanel>
         <ToolBarTray DockPanel.Dock="Top">
             <ToolBar Width="750">
@@ -22,8 +25,20 @@
         <TextBlock x:Name="txbMoves" DockPanel.Dock="Right" Margin="10">
             <Label Content="Siirrot näkyvät tässä"/>
         </TextBlock>
-        <Canvas Margin="10" Width="500" Height="500">
-            <Label Content="Tähän tulee lauta" Canvas.Left="200" Canvas.Top="224"/>
-        </Canvas>
+        <DockPanel>
+            <Canvas DockPanel.Dock="Left" Margin="5" Width="100" Height="400" VerticalAlignment="Center">
+                <Label Content="Mustan" Width="80" Canvas.Left="20" Canvas.Top="190"/>
+                <Label Content="syödyt" Width="80" Canvas.Left="20" Canvas.Top="210"/>
+            </Canvas>
+            <Canvas DockPanel.Dock="Right" Margin="5" Width="100" Height="400" VerticalAlignment="Center">
+                <Label Content="Valkoisen" Width="80" Canvas.Left="20" Canvas.Top="190"/>
+                <Label Content="syödyt" Width="80" Canvas.Left="20" Canvas.Top="210"/>
+            </Canvas>
+            <Border Margin="5" BorderBrush="Black" BorderThickness="5" VerticalAlignment="Center">
+                <Canvas x:Name="cnvBoard" Width="400" Height="400">
+                    <Label Content="Lauta" Canvas.Left="180" Canvas.Top="180"/>
+                </Canvas>
+            </Border>
+        </DockPanel>
     </DockPanel>
 </Window>
