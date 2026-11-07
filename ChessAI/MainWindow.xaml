@@ -35,9 +35,13 @@
                 <Label Content="syödyt" Width="80" Canvas.Left="20" Canvas.Top="210"/>
             </Canvas>
             <Border Margin="5" BorderBrush="Black" BorderThickness="5" VerticalAlignment="Center">
-                <Canvas x:Name="cnvBoard" Width="400" Height="400">
-                    <Label Content="Lauta" Canvas.Left="180" Canvas.Top="180"/>
-                </Canvas>
+                <Grid>
+                    <Canvas x:Name="cnvBoard" IsHitTestVisible="False" Width="400" Height="400">
+                        <Label Content="Lauta" Canvas.Left="180" Canvas.Top="180"/>
+                    </Canvas>
+                    <Canvas x:Name="cnvPieces" Background="Transparent" Width="400" Height="400">
+                    </Canvas>
+                </Grid>
             </Border>
         </DockPanel>
     </DockPanel>
