@@ -42,6 +42,7 @@ namespace ChessAI
 
         private void Window_ContentRendered(object sender, EventArgs e)
         {
+            // piirrä taustaruudukko
             int squareSize = (int)cnvBoard.Width / 8;
             Brush? lightSquareBrush = (Brush?)Application.Current.FindResource("LightSquareBrush");
             Brush? darkSquareBrush = (Brush?)Application.Current.FindResource("DarkSquareBrush");
