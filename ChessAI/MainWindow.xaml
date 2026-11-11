@@ -14,12 +14,13 @@
     <DockPanel>
         <ToolBarTray DockPanel.Dock="Top">
             <ToolBar Width="750">
-                <Button Content="Uusi peli" Click="NewGame_Click"/>
-                <Button Content="Tallenna peli" Click="SaveGame_Click"/>
-                <Button Content="Lataa peli" Click="LoadGame_Click"/>
+                <Button Content="Alkutila" Click="NewGame_Click"/>
                 <Button Content="Tyhjennä" Click="ClearBoard_Click"/>
                 <Separator Margin="10,0,10,0"/>
-                <Button Content="Vaikeustaso" Click="Difficulty_Click"/>
+                <Button Content="Tallenna peli" Click="SaveGame_Click"/>
+                <Button Content="Lataa peli" Click="LoadGame_Click"/>
+                <Separator Margin="10,0,10,0"/>
+                <Button Content="Hakusyvyys" Click="Difficulty_Click"/>
                 <Button Content="Asetukset" Click="Settings_Click"/>
             </ToolBar>
         </ToolBarTray>
