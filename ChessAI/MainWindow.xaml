@@ -14,12 +14,21 @@
     <DockPanel>
         <ToolBarTray DockPanel.Dock="Top">
             <ToolBar Width="750">
-                <Button Content="Alkutila" Click="NewGame_Click"/>
-                <Button Content="Tyhjennä" Click="ClearBoard_Click"/>
-                <Separator Margin="10,0,10,0"/>
-                <Button Content="Tallenna peli" Click="SaveGame_Click"/>
-                <Button Content="Lataa peli" Click="LoadGame_Click"/>
-                <Separator Margin="10,0,10,0"/>
+                <Button Content="Mieti"
+                        BorderThickness="2"
+                        Click="Think_Click"
+                        />
+                <Border BorderBrush="DarkGray" BorderThickness="1" Padding="1,2,1,0">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Label Content="Vuoro" VerticalAlignment="Center"/>
+                        <ComboBox x:Name="cmbActivePlayer" Width="70" Margin="1,0,0,0" SelectionChanged="cmbActivePlayer_SelectionChanged"
+                                VerticalAlignment="Center" VerticalContentAlignment="Center"
+                                HorizontalContentAlignment="Left">
+                            <ComboBoxItem Content="Valkea" Selector.IsSelected="True"/>
+                            <ComboBoxItem Content="Musta"/>
+                        </ComboBox>
+                    </StackPanel>
+                </Border>
                 <Border BorderBrush="Black" BorderThickness="1" Padding="1,2,1,0">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <Label Content="Hakusyvyys" VerticalAlignment="Center"/>
@@ -37,6 +46,13 @@
                         </ComboBox>
                     </StackPanel>
                 </Border>
+                <Separator Margin="10,0,10,0"/>
+                <Button Content="Alkutila" Click="NewGame_Click"/>
+                <Button Content="Tyhjennä" Click="ClearBoard_Click"/>
+                <Separator Margin="10,0,10,0"/>
+                <Button Content="Tallenna peli" Click="SaveGame_Click"/>
+                <Button Content="Lataa peli" Click="LoadGame_Click"/>
+                <Separator Margin="10,0,10,0"/>
                 <Button Content="Asetukset" Click="Settings_Click"/>
             </ToolBar>
         </ToolBarTray>

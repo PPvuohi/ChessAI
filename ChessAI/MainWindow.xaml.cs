@@ -14,7 +14,10 @@ namespace ChessAI
         {
             InitializeComponent();
         }
-
+        private void Think_Click(object sender, RoutedEventArgs e)
+        {
+            // TODO
+        }
         private void NewGame_Click(object sender, RoutedEventArgs e)
         {
             SetupBoard();
@@ -165,6 +168,11 @@ namespace ChessAI
             Canvas.SetLeft(piece, col * squareSize + (halfSquare - halfWidth));
             Canvas.SetTop(piece, (fillCount % 8) * squareSize + (halfSquare - halfWidth));
             piece.Visibility = Visibility.Visible;
+        }
+
+        private void cmbActivePlayer_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 }
