@@ -20,7 +20,23 @@
                 <Button Content="Tallenna peli" Click="SaveGame_Click"/>
                 <Button Content="Lataa peli" Click="LoadGame_Click"/>
                 <Separator Margin="10,0,10,0"/>
-                <Button Content="Hakusyvyys" Click="Difficulty_Click"/>
+                <Border BorderBrush="Black" BorderThickness="1" Padding="1,2,1,0">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Label Content="Hakusyvyys" VerticalAlignment="Center"/>
+                        <ComboBox x:Name="cmbDepth" Width="40" Margin="1,0,0,0" SelectionChanged="cmbDepth_SelectionChanged"
+                                  VerticalAlignment="Center" VerticalContentAlignment="Center"
+                                  HorizontalContentAlignment="Left">
+                            <ComboBoxItem Content="1"/>
+                            <ComboBoxItem Content="2" Selector.IsSelected="True"/>
+                            <ComboBoxItem Content="3"/>
+                            <ComboBoxItem Content="4"/>
+                            <ComboBoxItem Content="5"/>
+                            <ComboBoxItem Content="6"/>
+                            <ComboBoxItem Content="7"/>
+                            <ComboBoxItem Content="8"/>
+                        </ComboBox>
+                    </StackPanel>
+                </Border>
                 <Button Content="Asetukset" Click="Settings_Click"/>
             </ToolBar>
         </ToolBarTray>

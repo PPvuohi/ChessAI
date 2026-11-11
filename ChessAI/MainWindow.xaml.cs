@@ -31,11 +31,14 @@ namespace ChessAI
             // TODO
         }
 
-        private void Difficulty_Click(object sender, RoutedEventArgs e)
+        private void Depth_Click(object sender, RoutedEventArgs e)
         {
             // TODO
         }
-
+        private void cmbDepth_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // TODO
+        }
         private void Settings_Click(object sender, RoutedEventArgs e)
         {
             // TODO
