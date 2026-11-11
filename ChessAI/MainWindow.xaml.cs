@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using ChessAI.Views;
 
 namespace ChessAI
 {
@@ -13,6 +14,7 @@ namespace ChessAI
         public MainWindow()
         {
             InitializeComponent();
+            new ThinkingWindow(this).Show();
         }
         private void Think_Click(object sender, RoutedEventArgs e)
         {
