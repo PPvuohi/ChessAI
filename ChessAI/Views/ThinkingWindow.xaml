@@ -6,8 +6,74 @@
         xmlns:local="clr-namespace:ChessAI.Views"
         mc:Ignorable="d"
         Title="Päätöksenteko"
-        Height="500" Width="800">
-    <Grid>
-        
-    </Grid>
+        Style="{StaticResource ThinkingWindowStyle}"
+        SizeToContent="WidthAndHeight"
+        >
+    <DockPanel>
+        <Grid DockPanel.Dock="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="80"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="80"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Label Content="Hakusyvyys:" HorizontalAlignment="Right" Grid.Column="0" Grid.Row="0"/>
+            <Label x:Name="lblDepth" Grid.Column="1" Grid.Row="0"/>
+            <Label Content="MAX: " Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right"/>
+            <Label x:Name="lblMax" Content="Valkea" Grid.Column="1" Grid.Row="1"/>
+            <Label Content="MIN: " Grid.Column="2" Grid.Row="1" HorizontalAlignment="Right"/>
+            <Label x:Name="lblMin" Content="Musta" Grid.Column="3" Grid.Row="1"/>
+        </Grid>
+        <StackPanel Orientation="Horizontal">
+            <GroupBox Header="Valkea" Margin="10" Background="{StaticResource LightSquareBrush}">
+                <StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="160"/>
+                        <ColumnDefinition Width="60"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Label Content="Mahdollisen siirtojen määrä:" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right"/>
+                    <Label x:Name="lblNoOfMoves" Grid.Column="1" Grid.Row="1"/>
+                    <Label Content="Tutkitaan siirtoa: " Grid.Column="0" Grid.Row="2" HorizontalAlignment="Right"/>
+                    <Label x:Name="lblCurrentMove" Grid.Column="1" Grid.Row="2"/>
+                </Grid>
+                    <GroupBox Header="Siirrot">
+                        <TextBox x:Name="txtMovesWhite" IsReadOnly="True" TextWrapping="Wrap"/>
+                    </GroupBox>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="Musta" DockPanel.Dock="Top" Margin="10" Background="{StaticResource DarkSquareBrush}">
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="60"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Label Content="Mahdollisen siirtojen määrä:" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right"/>
+                        <Label x:Name="lblNoOfMovesBlack" Grid.Column="1" Grid.Row="1"/>
+                        <Label Content="Tutkitaan siirtoa: " Grid.Column="0" Grid.Row="2" HorizontalAlignment="Right"/>
+                        <Label x:Name="lblCurrentMoveBlack" Grid.Column="1" Grid.Row="2"/>
+                </Grid>
+                <GroupBox Header="Siirrot">
+                    <TextBox x:Name="txtMovesBlack" IsReadOnly="True" TextWrapping="Wrap"/>
+                </GroupBox>
+        </StackPanel>
+        </GroupBox>
+        </StackPanel>
+    </DockPanel>
 </Window>
