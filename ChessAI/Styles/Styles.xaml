@@ -5,6 +5,9 @@
     <Style x:Key="MainWindowStyle" TargetType="Window">
         <Setter Property="Background" Value="BurlyWood"/>
     </Style>
+    <Style x:Key="ThinkingWindowStyle" TargetType="Window">
+        <Setter Property="Background" Value="Bisque"/>
+    </Style>
     <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button">
         <Setter Property="Background" Value="Beige"/>
         <Setter Property="BorderThickness" Value="1"/>
