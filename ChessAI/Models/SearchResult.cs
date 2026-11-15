@@ -7,6 +7,9 @@ namespace ChessAI.Models
         // Paras löydetty siirto
         public string BestMove { get; set; } = "";
 
+        // Paras löydetty siirto tietomallina
+        public Move? BestMoveData { get; set; }
+
         // Parhaan siirron arvio
         public int BestScore { get; set; }
 
@@ -15,5 +18,7 @@ namespace ChessAI.Models
 
         // Haun aikana syntyneet vaiheet käyttöliittymää varten
         public List<SearchStep> Steps { get; set; } = new();
+
+
     }
 }

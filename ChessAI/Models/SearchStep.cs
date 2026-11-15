@@ -5,6 +5,12 @@
         // Hakupuun tämänhetkinen syvyys
         public int Depth { get; set; }
 
+        // Haun maksimisyvyys
+        public int MaxDepth { get; set; }
+
+        // Valkea tai musta
+        public string Side { get; set; } = "";
+
         // MAX tai MIN
         public string Player { get; set; } = "";
 

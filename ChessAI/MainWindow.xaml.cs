@@ -2,6 +2,8 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using ChessAI.Models;
+using ChessAI.Services;
 
 namespace ChessAI
 {
@@ -12,11 +14,43 @@ namespace ChessAI
     {
         public MainWindow()
         {
-            InitializeComponent();
+            InitializeComponent();                                 
         }
+
         private void Think_Click(object sender, RoutedEventArgs e)
         {
-            // TODO
+            // Luetaan nykyinen pelitilanne käyttöliittymästä
+            BoardState position = CreateBoardStateFromUI();
+
+            int depth = 3;
+
+            if (cmbDepth.SelectedItem is ComboBoxItem depthItem &&
+                int.TryParse(depthItem.Content?.ToString(), out int selectedDepth))
+            {
+                depth = selectedDepth;
+            }
+
+            ChessSearchService searchService = new ChessSearchService();
+
+            // Suoritetaan haku Alpha-Beta-karsintaa käyttäen
+            SearchResult result = searchService.FindBestMove(
+                position,
+                depth,
+                true);
+
+            if (result.BestMoveData == null)
+            {
+                MessageBox.Show("Tekoäly ei löytänyt mahdollista siirtoa.");
+                return;
+            }
+
+            // Näytetään tekoälyn valitsema siirto laudalla
+            HighlightAiMove(result.BestMoveData);
+
+            MessageBox.Show(
+                $"Paras siirto: {result.BestMove}\n" +
+                $"Arvio: {result.BestScore}\n" +
+                $"Tutkitut asemat: {result.NodesVisited}");
         }
         private void NewGame_Click(object sender, RoutedEventArgs e)
         {
@@ -174,5 +208,137 @@ namespace ChessAI
         {
 
         }
+
+        // Muodostetaan käyttöliittymän nappuloista pelitilanne tekoälylle
+        private BoardState CreateBoardStateFromUI()
+        {
+            BoardState position = new BoardState();
+
+            double squareSize = cnvBoard.Width / 8;
+
+            foreach (FrameworkElement piece in cnvPieces.Children)
+            {
+                double left = Canvas.GetLeft(piece);
+                double top = Canvas.GetTop(piece);
+
+                if (double.IsNaN(left) || double.IsNaN(top))
+                    continue;
+
+                int col = (int)((left + piece.Width / 2) / squareSize);
+                int row = (int)((top + piece.Height / 2) / squareSize);
+
+                if (row < 0 || row >= 8 || col < 0 || col >= 8)
+                    continue;
+
+                char symbol = GetPieceSymbol(piece.Name);
+
+                if (symbol != '.')
+                {
+                    position.Squares[row, col] = symbol;
+                }
+            }
+
+            if (cmbActivePlayer.SelectedItem is ComboBoxItem playerItem)
+            {
+                string player =
+                    playerItem.Content?.ToString() ?? "";
+
+                position.WhiteToMove =
+                    !player.Contains(
+                        "musta",
+                        StringComparison.OrdinalIgnoreCase);
+            }
+            else
+            {
+                position.WhiteToMove = true;
+            }
+
+            return position;
+        }
+
+        // Muutetaan käyttöliittymän nappulan nimi tekoälyn käyttämäksi merkiksi
+        private char GetPieceSymbol(string name)
+        {
+            bool white =
+                name.StartsWith(
+                    "white",
+                    StringComparison.OrdinalIgnoreCase);
+
+            char piece;
+
+            if (name.Contains("Pawn", StringComparison.OrdinalIgnoreCase))
+                piece = 'P';
+            else if (name.Contains("Knight", StringComparison.OrdinalIgnoreCase))
+                piece = 'N';
+            else if (name.Contains("Bishop", StringComparison.OrdinalIgnoreCase))
+                piece = 'B';
+            else if (name.Contains("Rook", StringComparison.OrdinalIgnoreCase))
+                piece = 'R';
+            else if (name.Contains("Queen", StringComparison.OrdinalIgnoreCase))
+                piece = 'Q';
+            else if (name.Contains("King", StringComparison.OrdinalIgnoreCase))
+                piece = 'K';
+            else
+                return '.';
+
+            return white
+                ? piece
+                : char.ToLowerInvariant(piece);
+        }
+
+        // Korostetaan tekoälyn valitseman siirron lähtö- ja kohderuutu
+        private void HighlightAiMove(Move move)
+        {
+            List<Rectangle> oldHighlights =
+                cnvBoard.Children
+                    .OfType<Rectangle>()
+                    .Where(r => Equals(r.Tag, "AiHighlight"))
+                    .ToList();
+
+            foreach (Rectangle highlight in oldHighlights)
+            {
+                cnvBoard.Children.Remove(highlight);
+            }
+
+            double squareSize = cnvBoard.Width / 8;
+
+            AddAiHighlight(
+                move.FromRow,
+                move.FromCol,
+                squareSize,
+                Brushes.DeepSkyBlue);
+
+            AddAiHighlight(
+                move.ToRow,
+                move.ToCol,
+                squareSize,
+                Brushes.Gold);
+        }
+
+        // Korostetaan tekoälyn valitseman siirron ruutu laudalla
+        private void AddAiHighlight(
+             int row,
+             int col,
+             double squareSize,
+             Brush color)
+        {
+            Rectangle highlight = new Rectangle
+            {
+                Width = squareSize,
+                Height = squareSize,
+                Stroke = color,
+                StrokeThickness = 5,
+                Fill = Brushes.Transparent,
+                Tag = "AiHighlight"
+            };
+
+            // Asetetaan korostus oikean ruudun kohdalle
+            Canvas.SetLeft(highlight, col * squareSize);
+            Canvas.SetTop(highlight, row * squareSize);
+
+            cnvBoard.Children.Add(highlight);
+        }
+
     }
+
 }
