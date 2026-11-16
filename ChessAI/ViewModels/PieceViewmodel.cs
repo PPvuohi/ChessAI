@@ -5,6 +5,23 @@ namespace ChessAI.ViewModels
 {
     public class PieceViewmodel : INotifyPropertyChanged
     {
+        private static Dictionary<string, Dictionary<string, string>> localisation = new()
+        {
+            {
+                "FI",
+                new Dictionary<string, string>
+                {
+                    { "bishop", "lähetti" },
+                    { "black", "musta" },
+                    { "king", "kuningas" },
+                    { "knight", "ratsu" },
+                    { "pawn", "moukka" },
+                    { "queen", "kuningatar" },
+                    { "rook", "torni" },
+                    { "white", "valkea" },
+                }
+            }
+        };
         private int _row;
         private int _col;
         public string Name { get; } = "";
@@ -34,6 +51,26 @@ namespace ChessAI.ViewModels
         protected void OnPropertyChanged([CallerMemberName] string? propertyName=null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        public string HumanReadableName(string lang="FI")
+        {
+            string ret = "";
+            Dictionary<string, string> dict = localisation[lang] ?? new Dictionary<string, string>();
+            if (Name.StartsWith("white"))
+                ret = dict["white"] ?? "white";
+            else
+                ret = dict["black"] ?? "black";
+            ret += " ";
+            foreach (string pieceName in new[] { "Pawn", "Bishop", "Knight", "Rook", "Queen", "King" })
+            {
+                if (Name.Contains(pieceName))
+                {
+                    string name = pieceName.ToLower();
+                    ret += dict[name] ?? name;
+                    break;
+                }
+            }
+            return ret;
         }
     }
 }

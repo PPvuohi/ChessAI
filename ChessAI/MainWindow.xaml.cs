@@ -77,7 +77,7 @@ namespace ChessAI
                     Row = row
                 };
                 AddSelectedHighlight(row, col);
-                lblSelected.Content = $"Valittu: {PositionName(row, col)} ({selected.Name})";
+                lblSelected.Content = $"Valittu: {PositionName(row, col)} ({selected.HumanReadableName()})";
             }
         }
 
