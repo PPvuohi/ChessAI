@@ -22,7 +22,21 @@ namespace ChessAI.ViewModels
                     { "rook", "torni" },
                     { "white", "valkea" },
                 }
-            }
+            },
+            {
+                "SV",
+                new Dictionary<string, string>
+                {
+                    { "bishop", "löpare" },
+                    { "black", "svart" },
+                    { "king", "kung" },
+                    { "knight", "springare" },
+                    { "pawn", "bonde" },
+                    { "queen", "dam" },
+                    { "rook", "torn" },
+                    { "white", "vit" },
+                }
+           }
         };
         private int _row;
         private int _col;
