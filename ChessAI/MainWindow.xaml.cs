@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using ChessAI.ViewModels;
 using ChessAI.Views;
 
 namespace ChessAI
@@ -11,6 +12,7 @@ namespace ChessAI
     /// </summary>
     public partial class MainWindow : Window
     {
+        private PieceViewmodel? selected = null;
         public MainWindow()
         {
             InitializeComponent();
@@ -47,6 +49,36 @@ namespace ChessAI
         private void Settings_Click(object sender, RoutedEventArgs e)
         {
             // TODO
+        }
+
+        private void cnvPieces_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            lblSelected.Content = "";
+            ClearSelectedHighlight();
+            Point clickPos = e.GetPosition(cnvPieces);
+            FrameworkElement? piece = FindPieceAtPos(clickPos, cnvPieces);
+            if (piece == null && selected != null)
+            {
+                FrameworkElement? toMove = FindPieceByName(selected.Name, cnvPieces);
+                if (toMove != null)
+                { 
+                    var (row, col) = FindSquare(clickPos, cnvPieces);
+                    PlacePiece(toMove.Name, row, col);
+                    lblSelected.Content = $"Kohde: {PositionName(row, col)}";
+                    ClearSelectedHighlight();
+                }
+            }
+            else if (piece != null)
+            {
+                var (row, col) = FindSquare(clickPos, cnvPieces);
+                selected = new ViewModels.PieceViewmodel(piece.Name)
+                {
+                    Col = col,
+                    Row = row
+                };
+                AddSelectedHighlight(row, col);
+                lblSelected.Content = $"Valittu: {PositionName(row, col)} ({selected.Name})";
+            }
         }
 
         private void Window_ContentRendered(object sender, EventArgs e)
@@ -138,6 +170,71 @@ namespace ChessAI
                 if (piece.Name == name)
                     return piece;
             return null;
+        }
+        private FrameworkElement? FindPieceAtPos(Point pos, Canvas container)
+        {
+            double x = pos.X;
+            double y = pos.Y;
+            foreach (FrameworkElement piece in container.Children)
+            {
+                double left = Canvas.GetLeft(piece);
+                double right = Canvas.GetRight(piece);
+                double top = Canvas.GetTop(piece);
+                double bottom = Canvas.GetBottom(piece);
+                double width = piece.Width;
+                double height = piece.Height;
+                string name = piece.Name;
+                if (
+                    left <= x &&
+                    left + width >= x &&
+                    top <= y &&
+                    top + height >= y
+                    )
+                    return piece;
+            }
+            return null;
+        }
+        private (int, int) FindSquare(Point pos, Canvas container)
+        {
+            double boardHeight = container.Height;
+            double squareSize = boardHeight / 8;
+            double x = pos.X;
+            double y = pos.Y;
+            int row = 8 - (int)(y / squareSize);  // rivi 1 on alareunassa
+            int col = (int)(x / squareSize) + 1;
+            return (row, col);
+        }
+        private void AddSelectedHighlight(int row, int col)
+        {
+            ClearSelectedHighlight();
+            Style highlightStyle = (Style)FindResource("SelectedHighlightStyle");
+            double boardHeight = cnvBoard.Height;
+            double squareSize = boardHeight / 8;
+            Rectangle highlight = new()
+            {
+                Width = squareSize,
+                Height = squareSize,
+                Style = highlightStyle,
+                Tag = "SelectedHighlight"
+            };
+            Canvas.SetLeft(highlight, ((col - 1) * squareSize));
+            Canvas.SetTop(highlight, ((8 - row) * squareSize));
+            cnvBoard.Children.Add(highlight);
+        }
+        private void ClearSelectedHighlight()
+        {
+            List<Rectangle> highlights = cnvBoard.Children
+                                            .OfType<Rectangle>()
+                                            .Where(r => Equals(r.Tag, "SelectedHighlight"))
+                                            .ToList();
+            foreach (Rectangle h in highlights)
+                cnvBoard.Children.Remove(h);
+        }
+        private string PositionName(int row, int col)
+        {
+            if (row < 1 || col < 1 || row > 8 || col > 8)
+                return "mahoton";
+            return $"{(char)((int)'A' + col - 1)}{row}";
         }
         private void ClearBoard_Click(object sender, RoutedEventArgs e)
         {

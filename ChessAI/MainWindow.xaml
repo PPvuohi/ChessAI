@@ -59,6 +59,7 @@
         <TextBlock x:Name="txbMoves" DockPanel.Dock="Right" Margin="10">
             <Label Content="Siirrot näkyvät tässä"/>
         </TextBlock>
+        <Label x:Name="lblSelected" DockPanel.Dock="Bottom" HorizontalAlignment="Center" Margin="10"/>
         <DockPanel>
             <Canvas x:Name="cnvWhitePieces" DockPanel.Dock="Left" Margin="5" Width="100" Height="400" VerticalAlignment="Center"/>
             <Canvas x:Name="cnvBlackPieces" DockPanel.Dock="Right" Margin="5" Width="100" Height="400" VerticalAlignment="Center"/>
@@ -67,7 +68,8 @@
                     <Canvas x:Name="cnvBoard" IsHitTestVisible="False" Width="400" Height="400">
                         <Label Content="Lauta" Canvas.Left="180" Canvas.Top="180"/>
                     </Canvas>
-                    <Canvas x:Name="cnvPieces" Background="Transparent" Width="400" Height="400">
+                    <Canvas x:Name="cnvPieces" Background="Transparent" Width="400" Height="400"
+                            MouseLeftButtonDown="cnvPieces_MouseLeftButtonDown">
                         <!-- nappulat asetetaan oikeille paikoille ohjelmallisesti -->
                         <Image x:Name="whitePawn1" Source="Graphics/white_pawn.png" Width="50" Height="50" Visibility="Hidden"/>
                         <Image x:Name="whitePawn2" Source="Graphics/white_pawn.png" Width="50" Height="50" Visibility="Hidden"/>
