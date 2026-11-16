@@ -205,6 +205,7 @@ namespace ChessAI
         {
             ClearSelectedHighlights();
             ClearAIHighlights();
+            ClearMessages();
             FromTrayToBoard(cnvWhitePieces);
             FromTrayToBoard(cnvBlackPieces);
             // asettele nappulat aloituspaikoilleen
@@ -341,10 +342,15 @@ namespace ChessAI
                 return "mahoton";
             return $"{(char)((int)'A' + col - 1)}{row}";
         }
+        private void ClearMessages()
+        {
+            lblSelected.Content = "";
+        }
         private void ClearBoard_Click(object sender, RoutedEventArgs e)
         {
             ClearSelectedHighlights();
             ClearAIHighlights();
+            ClearMessages();
             List<FrameworkElement> toRemove = [.. cnvPieces.Children.Cast<FrameworkElement>()];
             foreach (FrameworkElement piece in toRemove)
             {
