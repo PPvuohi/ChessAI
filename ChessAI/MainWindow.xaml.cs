@@ -60,7 +60,6 @@ namespace ChessAI
         private void NewGame_Click(object sender, RoutedEventArgs e)
         {
             SetupBoard();
-            // TODO
         }
 
         private void SaveGame_Click(object sender, RoutedEventArgs e)
@@ -191,6 +190,7 @@ namespace ChessAI
                     cnvBoard.Children.Add(square);
                 }
             }
+            SetupBoard();
         }
         private void FromTrayToBoard(Canvas tray)
         {
