@@ -203,6 +203,8 @@ namespace ChessAI
         }
         private void SetupBoard()
         {
+            ClearSelectedHighlights();
+            ClearAIHighlights();
             FromTrayToBoard(cnvWhitePieces);
             FromTrayToBoard(cnvBlackPieces);
             // asettele nappulat aloituspaikoilleen
@@ -311,6 +313,19 @@ namespace ChessAI
             ClearSelectedHighlight(cnvBlackBoard);
             ClearSelectedHighlight(cnvWhiteBoard);
         }
+        private void ClearAIHighlights()
+        {
+            List<Rectangle> oldHighlights =
+                cnvBoard.Children
+                    .OfType<Rectangle>()
+                    .Where(r => Equals(r.Tag, "AiHighlight"))
+                    .ToList();
+
+            foreach (Rectangle highlight in oldHighlights)
+            {
+                cnvBoard.Children.Remove(highlight);
+            }
+        }
         private void ClearSelectedHighlight(Canvas container)
         {
             List<Rectangle> highlights = container.Children
@@ -328,6 +343,8 @@ namespace ChessAI
         }
         private void ClearBoard_Click(object sender, RoutedEventArgs e)
         {
+            ClearSelectedHighlights();
+            ClearAIHighlights();
             List<FrameworkElement> toRemove = [.. cnvPieces.Children.Cast<FrameworkElement>()];
             foreach (FrameworkElement piece in toRemove)
             {
@@ -444,16 +461,7 @@ namespace ChessAI
         // Korostetaan tekoälyn valitseman siirron lähtö- ja kohderuutu
         private void HighlightAiMove(Move move)
         {
-            List<Rectangle> oldHighlights =
-                cnvBoard.Children
-                    .OfType<Rectangle>()
-                    .Where(r => Equals(r.Tag, "AiHighlight"))
-                    .ToList();
-
-            foreach (Rectangle highlight in oldHighlights)
-            {
-                cnvBoard.Children.Remove(highlight);
-            }
+            ClearAIHighlights();
 
             double squareSize = cnvBoard.Width / 8;
 
