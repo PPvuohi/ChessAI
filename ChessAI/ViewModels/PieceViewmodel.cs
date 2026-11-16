@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace ChessAI.ViewModels
 {
@@ -24,7 +26,10 @@ namespace ChessAI.ViewModels
         };
         private int _row;
         private int _col;
-        public string Name { get; } = "";
+        public string Name { get; set;  } = "";
+        public bool OnBoard { get; set; } = false;
+        public FrameworkElement? ScreenObj { get; set; }
+        public Canvas? Container { get; set; }
         
         public int Row
         {
@@ -42,10 +47,6 @@ namespace ChessAI.ViewModels
                 _col = value;
                 OnPropertyChanged();
             }
-        }
-        public PieceViewmodel(string name)
-        {
-            Name = name;
         }
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string? propertyName=null)

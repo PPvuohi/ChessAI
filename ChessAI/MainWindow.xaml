@@ -61,9 +61,21 @@
         </TextBlock>
         <Label x:Name="lblSelected" DockPanel.Dock="Bottom" HorizontalAlignment="Center" Margin="10"/>
         <DockPanel>
-            <Canvas x:Name="cnvWhitePieces" DockPanel.Dock="Left" Margin="5" Width="100" Height="400" VerticalAlignment="Center"/>
-            <Canvas x:Name="cnvBlackPieces" DockPanel.Dock="Right" Margin="5" Width="100" Height="400" VerticalAlignment="Center"/>
-                <Border Margin="5" BorderBrush="Black" BorderThickness="5" VerticalAlignment="Center">
+            <Grid DockPanel.Dock="Left" Margin="5" VerticalAlignment="Center">
+                <Canvas x:Name="cnvWhiteBoard" Width="100" Height="400"
+                        IsHitTestVisible="False"/>
+                <Canvas x:Name="cnvWhitePieces" Width="100" Height="400"
+                        Background="Transparent"
+                        MouseLeftButtonDown="cnvWhitePieces_MouseLeftButtonDown"/>
+            </Grid>
+            <Grid DockPanel.Dock="Right" Margin="5" VerticalAlignment="Center">
+                <Canvas x:Name="cnvBlackBoard" Width="100" Height="400"
+                        IsHitTestVisible="False"/>
+                <Canvas x:Name="cnvBlackPieces" Width="100" Height="400"
+                        Background="Transparent"
+                    MouseLeftButtonDown="cnvBlackPieces_MouseLeftButtonDown"/>
+            </Grid>
+            <Border Margin="5" BorderBrush="Black" BorderThickness="5" VerticalAlignment="Center">
                 <Grid>
                     <Canvas x:Name="cnvBoard" IsHitTestVisible="False" Width="400" Height="400">
                         <Label Content="Lauta" Canvas.Left="180" Canvas.Top="180"/>
