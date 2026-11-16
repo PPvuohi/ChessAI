@@ -370,16 +370,26 @@ namespace ChessAI
             if (tray.Children.Contains(piece))
                 return;
             tray.Children.Add(piece);
-            int fillCount = tray.Children.Count;
             double trayWidth = tray.Width;
             double squareSize = trayWidth / 2;
             double halfSquare = squareSize / 2.0;
             double halfWidth = piece.Width / 2.0;
             double halfHeight = piece.Height / 2.0;
-            int col = fillCount > 8 ? 0 : 1;
-            Canvas.SetLeft(piece, col * squareSize + (halfSquare - halfWidth));
-            Canvas.SetTop(piece, (fillCount % 8) * squareSize + (halfSquare - halfWidth));
-            piece.Visibility = Visibility.Visible;
+            FrameworkElement? occupant;
+            Point pos;
+            for (int col = 0; col <= 1; col++)
+                for (int row = 0; row <= 7; row++)
+                {
+                    pos = new(col * squareSize + halfSquare, row * squareSize + halfSquare);
+                    occupant = FindPieceAtPos(pos, tray);
+                    if (occupant == null)   // löytyi tyhjä paikka
+                    {
+                        Canvas.SetLeft(piece, col * squareSize + (halfSquare - halfWidth));
+                        Canvas.SetTop(piece, row * squareSize + (halfSquare - halfWidth));
+                        piece.Visibility = Visibility.Visible;
+                        return;
+                    }
+                }
         }
 
         private void cmbActivePlayer_SelectionChanged(object sender, SelectionChangedEventArgs e)
