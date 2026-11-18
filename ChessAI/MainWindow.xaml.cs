@@ -96,12 +96,12 @@ namespace ChessAI
         private void cnvPieces_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             lblSelected.Content = "";
+            string? captured = "";
             Point clickPos = e.GetPosition(cnvPieces);
             var (row, col) = FindSquare(clickPos, cnvPieces);
             FrameworkElement? piece = FindPieceAtPos(clickPos, cnvPieces);
-            PieceViewmodel? targeted;
-            if (selected != null && piece != null)
-            {
+            PieceViewmodel? targeted = null;
+            if (piece != null)
                 targeted = new()
                 {
                     Name = piece.Name,
@@ -111,11 +111,15 @@ namespace ChessAI
                     ScreenObj = piece,
                     Container = cnvPieces
                 };
+            if (selected != null && targeted != null)
+            {
                 if (selected.IsWhite != targeted.IsWhite)
                 {
                     cnvPieces.Children.Remove(piece);
-                    AddToTray(targeted.IsWhite ? cnvWhitePieces : cnvBlackPieces, piece);
+                    AddToTray(targeted.IsWhite ? cnvWhitePieces : cnvBlackPieces, targeted.ScreenObj!);
                     piece = null;
+                    captured = targeted.HumanReadableName();
+                    targeted = null;
                 }
 
             }
@@ -131,25 +135,24 @@ namespace ChessAI
                 if (toMove != null)
                 { 
                     PlacePiece(toMove.Name, row, col);
-                    lblSelected.Content = $"Kohde: {PositionName(row, col)}";
+                    if (captured != null)
+                        lblSelected.Content = $"Lyöty: {PositionName(row, col)} ({captured})";
+                    else
+                        lblSelected.Content = $"Kohde: {PositionName(row, col)}";
                     YieldTurn(selected);
                     selected = null;
                     ClearSelectedHighlights();
                 }
             }
-            else if (piece != null)
+            else if (targeted != null)
             {
-                selected = new PieceViewmodel()
+                Turn currentTurn = GetCurrentTurn();
+                if (currentTurn == Turn.Neither || currentTurn == (targeted.IsWhite ? Turn.White : Turn.Black))
                 {
-                    Name = piece.Name,
-                    Col = col,
-                    Row = row,
-                    OnBoard = true,
-                    ScreenObj = piece,
-                    Container = cnvPieces
-                };
-                AddSelectedHighlight(row, col, cnvBoard);
-                lblSelected.Content = $"Valittu: {PositionName(row, col)} ({selected.HumanReadableName()})";
+                    selected = targeted;
+                    AddSelectedHighlight(row, col, cnvBoard);
+                    lblSelected.Content = $"Valittu: {PositionName(row, col)} ({selected.HumanReadableName()})";
+                }
             }
         }
         private void cnvWhitePieces_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
