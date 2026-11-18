@@ -7,7 +7,6 @@ using ChessAI.ViewModels;
 using ChessAI.Views;
 using ChessAI.Models;
 using ChessAI.Services;
-using System.Security.Cryptography.X509Certificates;
 
 namespace ChessAI
 {
