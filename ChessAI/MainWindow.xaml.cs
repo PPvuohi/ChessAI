@@ -147,7 +147,8 @@ namespace ChessAI
             else if (targeted != null)
             {
                 Turn currentTurn = GetCurrentTurn();
-                if (currentTurn == Turn.Neither || currentTurn == (targeted.IsWhite ? Turn.White : Turn.Black))
+                // toistaiseksi aina sallittu koska vuorojen valvonta hankaloittaa tiettyjä juttuja
+                if (true || currentTurn == Turn.Neither || currentTurn == (targeted.IsWhite ? Turn.White : Turn.Black))
                 {
                     selected = targeted;
                     AddSelectedHighlight(row, col, cnvBoard);
