@@ -8,8 +8,7 @@
         Style="{StaticResource MainWindowStyle}"
         ContentRendered="Window_ContentRendered"
         Title="Shakkiprofessori"
-        Height="600"
-        SizeToContent="Width"
+        SizeToContent="WidthAndHeight"
         >
     <DockPanel>
         <ToolBarTray DockPanel.Dock="Top">
@@ -59,15 +58,88 @@
         <TextBlock x:Name="txbMoves" DockPanel.Dock="Right" Margin="10">
             <Label Content="Siirrot näkyvät tässä"/>
         </TextBlock>
+        <Label x:Name="lblSelected" DockPanel.Dock="Bottom" HorizontalAlignment="Center" Margin="10"/>
         <DockPanel>
-            <Canvas x:Name="cnvWhitePieces" DockPanel.Dock="Left" Margin="5" Width="100" Height="400" VerticalAlignment="Center"/>
-            <Canvas x:Name="cnvBlackPieces" DockPanel.Dock="Right" Margin="5" Width="100" Height="400" VerticalAlignment="Center"/>
-                <Border Margin="5" BorderBrush="Black" BorderThickness="5" VerticalAlignment="Center">
+            <Grid DockPanel.Dock="Left" Margin="5" VerticalAlignment="Center">
+                <Canvas x:Name="cnvWhiteBoard" Width="100" Height="400"
+                        IsHitTestVisible="False"/>
+                <Canvas x:Name="cnvWhitePieces" Width="100" Height="400"
+                        Background="Transparent"
+                        MouseLeftButtonDown="cnvWhitePieces_MouseLeftButtonDown"/>
+            </Grid>
+            <Grid DockPanel.Dock="Right" Margin="5" VerticalAlignment="Center">
+                <Canvas x:Name="cnvBlackBoard" Width="100" Height="400"
+                        IsHitTestVisible="False"/>
+                <Canvas x:Name="cnvBlackPieces" Width="100" Height="400"
+                        Background="Transparent"
+                    MouseLeftButtonDown="cnvBlackPieces_MouseLeftButtonDown"/>
+            </Grid>
+            <Border Margin="5" BorderBrush="Black" BorderThickness="5" VerticalAlignment="Center">
                 <Grid>
-                    <Canvas x:Name="cnvBoard" IsHitTestVisible="False" Width="400" Height="400">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Label Content="A" FontWeight="Bold" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Label Content="B" FontWeight="Bold" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Label Content="C" FontWeight="Bold" Grid.Row="0" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Label Content="D" FontWeight="Bold" Grid.Row="0" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Label Content="E" FontWeight="Bold" Grid.Row="0" Grid.Column="5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Label Content="F" FontWeight="Bold" Grid.Row="0" Grid.Column="6" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Label Content="G" FontWeight="Bold" Grid.Row="0" Grid.Column="7" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Label Content="H" FontWeight="Bold" Grid.Row="0" Grid.Column="8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Label Content="A" FontWeight="Bold" Grid.Row="9" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Label Content="B" FontWeight="Bold" Grid.Row="9" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Label Content="C" FontWeight="Bold" Grid.Row="9" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Label Content="D" FontWeight="Bold" Grid.Row="9" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Label Content="E" FontWeight="Bold" Grid.Row="9" Grid.Column="5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Label Content="F" FontWeight="Bold" Grid.Row="9" Grid.Column="6" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Label Content="G" FontWeight="Bold" Grid.Row="9" Grid.Column="7" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Label Content="H" FontWeight="Bold" Grid.Row="9" Grid.Column="8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Label Content="8" FontWeight="Bold" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Label Content="7" FontWeight="Bold" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Label Content="6" FontWeight="Bold" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Label Content="5" FontWeight="Bold" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Label Content="4" FontWeight="Bold" Grid.Row="5" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Label Content="3" FontWeight="Bold" Grid.Row="6" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Label Content="2" FontWeight="Bold" Grid.Row="7" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Label Content="1" FontWeight="Bold" Grid.Row="8" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Label Content="8" FontWeight="Bold" Grid.Row="1" Grid.Column="9" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Label Content="7" FontWeight="Bold" Grid.Row="2" Grid.Column="9" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Label Content="6" FontWeight="Bold" Grid.Row="3" Grid.Column="9" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Label Content="5" FontWeight="Bold" Grid.Row="4" Grid.Column="9" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Label Content="4" FontWeight="Bold" Grid.Row="5" Grid.Column="9" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Label Content="3" FontWeight="Bold" Grid.Row="6" Grid.Column="9" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Label Content="2" FontWeight="Bold" Grid.Row="7" Grid.Column="9" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Label Content="1" FontWeight="Bold" Grid.Row="8" Grid.Column="9" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Canvas x:Name="cnvBoard" IsHitTestVisible="False" Width="400" Height="400"
+                            Grid.Row="1" Grid.RowSpan="8" Grid.Column="1" Grid.ColumnSpan="8"
+                            >
                         <Label Content="Lauta" Canvas.Left="180" Canvas.Top="180"/>
                     </Canvas>
-                    <Canvas x:Name="cnvPieces" Background="Transparent" Width="400" Height="400">
+                    <Canvas x:Name="cnvPieces" Background="Transparent" Width="400" Height="400"
+                            Grid.Row="1" Grid.RowSpan="8" Grid.Column="1" Grid.ColumnSpan="8"
+                            MouseLeftButtonDown="cnvPieces_MouseLeftButtonDown">
                         <!-- nappulat asetetaan oikeille paikoille ohjelmallisesti -->
                         <Image x:Name="whitePawn1" Source="Graphics/white_pawn.png" Width="50" Height="50" Visibility="Hidden"/>
                         <Image x:Name="whitePawn2" Source="Graphics/white_pawn.png" Width="50" Height="50" Visibility="Hidden"/>

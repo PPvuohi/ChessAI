@@ -1,7 +1,9 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using ChessAI.ViewModels;
 using ChessAI.Views;
 using ChessAI.Models;
 using ChessAI.Services;
@@ -13,6 +15,7 @@ namespace ChessAI
     /// </summary>
     public partial class MainWindow : Window
     {
+        private PieceViewmodel? selected = null;
         public MainWindow()
         {
             InitializeComponent();
@@ -57,7 +60,6 @@ namespace ChessAI
         private void NewGame_Click(object sender, RoutedEventArgs e)
         {
             SetupBoard();
-            // TODO
         }
 
         private void SaveGame_Click(object sender, RoutedEventArgs e)
@@ -81,6 +83,85 @@ namespace ChessAI
         private void Settings_Click(object sender, RoutedEventArgs e)
         {
             // TODO
+        }
+
+        private void cnvPieces_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            lblSelected.Content = "";
+            Point clickPos = e.GetPosition(cnvPieces);
+            FrameworkElement? piece = FindPieceAtPos(clickPos, cnvPieces);
+            if (piece == null && selected != null)
+            {
+                if (selected.Container != cnvPieces)
+                {
+                    selected.Container?.Children.Remove(selected.ScreenObj);
+                    cnvPieces.Children.Add(selected.ScreenObj);
+                    selected.Container = cnvPieces;
+                }
+                FrameworkElement? toMove = FindPieceByName(selected.Name, cnvPieces);
+                if (toMove != null)
+                { 
+                    var (row, col) = FindSquare(clickPos, cnvPieces);
+                    PlacePiece(toMove.Name, row, col);
+                    lblSelected.Content = $"Kohde: {PositionName(row, col)}";
+                    ClearSelectedHighlights();
+                }
+            }
+            else if (piece != null)
+            {
+                var (row, col) = FindSquare(clickPos, cnvPieces);
+                selected = new ViewModels.PieceViewmodel()
+                {
+                    Name = piece.Name,
+                    Col = col,
+                    Row = row,
+                    OnBoard = true,
+                    ScreenObj = piece,
+                    Container = cnvPieces
+                };
+                AddSelectedHighlight(row, col, cnvBoard);
+                lblSelected.Content = $"Valittu: {PositionName(row, col)} ({selected.HumanReadableName()})";
+            }
+        }
+        private void cnvWhitePieces_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            TrayInteraction(cnvWhitePieces, e.GetPosition(cnvWhitePieces));
+        }
+        private void cnvBlackPieces_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            TrayInteraction(cnvBlackPieces, e.GetPosition(cnvBlackPieces));
+        }
+        private void TrayInteraction(Canvas tray, Point clickPos)
+        {
+            lblSelected.Content = "";
+            FrameworkElement? piece = FindPieceAtPos(clickPos, tray);
+            if (piece == null && selected != null)
+            {
+                if (selected.Container == tray || selected.ScreenObj == null)
+                    return;
+                selected.Container?.Children.Remove(selected.ScreenObj);
+                Canvas targetContainer;
+                if (selected.Name.StartsWith("black"))
+                    targetContainer = cnvBlackPieces;
+                else
+                    targetContainer = cnvWhitePieces;
+                AddToTray(targetContainer, selected.ScreenObj);
+                selected.Container = targetContainer;
+                ClearSelectedHighlights();
+            }
+            else if (piece != null)
+            {
+                selected = new ViewModels.PieceViewmodel()
+                {
+                    Name = piece.Name,
+                    OnBoard = false,
+                    ScreenObj = piece,
+                    Container = tray
+                };
+                var (row, col) = FindSquare(clickPos, tray);
+                AddSelectedHighlight(row, col, (tray == cnvWhitePieces ? cnvWhiteBoard : cnvBlackBoard));
+                lblSelected.Content = $"Valittu: {selected.HumanReadableName()}";
+            }
         }
 
         private void Window_ContentRendered(object sender, EventArgs e)
@@ -109,6 +190,7 @@ namespace ChessAI
                     cnvBoard.Children.Add(square);
                 }
             }
+            SetupBoard();
         }
         private void FromTrayToBoard(Canvas tray)
         {
@@ -121,6 +203,9 @@ namespace ChessAI
         }
         private void SetupBoard()
         {
+            ClearSelectedHighlights();
+            ClearAIHighlights();
+            ClearMessages();
             FromTrayToBoard(cnvWhitePieces);
             FromTrayToBoard(cnvBlackPieces);
             // asettele nappulat aloituspaikoilleen
@@ -173,8 +258,99 @@ namespace ChessAI
                     return piece;
             return null;
         }
+        private FrameworkElement? FindPieceAtPos(Point pos, Canvas container)
+        {
+            double x = pos.X;
+            double y = pos.Y;
+            foreach (FrameworkElement piece in container.Children)
+            {
+                double left = Canvas.GetLeft(piece);
+                double right = Canvas.GetRight(piece);
+                double top = Canvas.GetTop(piece);
+                double bottom = Canvas.GetBottom(piece);
+                double width = piece.Width;
+                double height = piece.Height;
+                string name = piece.Name;
+                if (
+                    left <= x &&
+                    left + width >= x &&
+                    top <= y &&
+                    top + height >= y
+                    )
+                    return piece;
+            }
+            return null;
+        }
+        private (int, int) FindSquare(Point pos, Canvas container)
+        {
+            double boardHeight = container.Height;
+            double squareSize = boardHeight / 8;
+            double x = pos.X;
+            double y = pos.Y;
+            int row = 8 - (int)(y / squareSize);  // rivi 1 on alareunassa
+            int col = (int)(x / squareSize) + 1;
+            return (row, col);
+        }
+        private void AddSelectedHighlight(int row, int col, Canvas container)
+        {
+            ClearSelectedHighlights();
+            Style highlightStyle = (Style)FindResource("SelectedHighlightStyle");
+            double boardHeight = container.Height;
+            double squareSize = boardHeight / 8;
+            Rectangle highlight = new()
+            {
+                Width = squareSize,
+                Height = squareSize,
+                Style = highlightStyle,
+                Tag = "SelectedHighlight"
+            };
+            Canvas.SetLeft(highlight, ((col - 1) * squareSize));
+            Canvas.SetTop(highlight, ((8 - row) * squareSize));
+            container.Children.Add(highlight);
+        }
+        private void ClearSelectedHighlights()
+        {
+            ClearSelectedHighlight(cnvBoard);
+            ClearSelectedHighlight(cnvBlackBoard);
+            ClearSelectedHighlight(cnvWhiteBoard);
+        }
+        private void ClearAIHighlights()
+        {
+            List<Rectangle> oldHighlights =
+                cnvBoard.Children
+                    .OfType<Rectangle>()
+                    .Where(r => Equals(r.Tag, "AiHighlight"))
+                    .ToList();
+
+            foreach (Rectangle highlight in oldHighlights)
+            {
+                cnvBoard.Children.Remove(highlight);
+            }
+        }
+        private void ClearSelectedHighlight(Canvas container)
+        {
+            List<Rectangle> highlights = container.Children
+                                            .OfType<Rectangle>()
+                                            .Where(r => Equals(r.Tag, "SelectedHighlight"))
+                                            .ToList();
+            foreach (Rectangle h in highlights)
+                container.Children.Remove(h);
+        }
+        private string PositionName(int row, int col)
+        {
+            if (row < 1 || col < 1 || row > 8 || col > 8)
+                return "mahoton";
+            return $"{(char)((int)'A' + col - 1)}{row}";
+        }
+        private void ClearMessages()
+        {
+            lblSelected.Content = "";
+        }
         private void ClearBoard_Click(object sender, RoutedEventArgs e)
         {
+            ClearSelectedHighlights();
+            ClearAIHighlights();
+            ClearMessages();
             List<FrameworkElement> toRemove = [.. cnvPieces.Children.Cast<FrameworkElement>()];
             foreach (FrameworkElement piece in toRemove)
             {
@@ -194,16 +370,26 @@ namespace ChessAI
             if (tray.Children.Contains(piece))
                 return;
             tray.Children.Add(piece);
-            int fillCount = tray.Children.Count;
             double trayWidth = tray.Width;
             double squareSize = trayWidth / 2;
             double halfSquare = squareSize / 2.0;
             double halfWidth = piece.Width / 2.0;
             double halfHeight = piece.Height / 2.0;
-            int col = fillCount > 8 ? 0 : 1;
-            Canvas.SetLeft(piece, col * squareSize + (halfSquare - halfWidth));
-            Canvas.SetTop(piece, (fillCount % 8) * squareSize + (halfSquare - halfWidth));
-            piece.Visibility = Visibility.Visible;
+            FrameworkElement? occupant;
+            Point pos;
+            for (int col = 0; col <= 1; col++)
+                for (int row = 0; row <= 7; row++)
+                {
+                    pos = new(col * squareSize + halfSquare, row * squareSize + halfSquare);
+                    occupant = FindPieceAtPos(pos, tray);
+                    if (occupant == null)   // löytyi tyhjä paikka
+                    {
+                        Canvas.SetLeft(piece, col * squareSize + (halfSquare - halfWidth));
+                        Canvas.SetTop(piece, row * squareSize + (halfSquare - halfWidth));
+                        piece.Visibility = Visibility.Visible;
+                        return;
+                    }
+                }
         }
 
         private void cmbActivePlayer_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -291,16 +477,7 @@ namespace ChessAI
         // Korostetaan tekoälyn valitseman siirron lähtö- ja kohderuutu
         private void HighlightAiMove(Move move)
         {
-            List<Rectangle> oldHighlights =
-                cnvBoard.Children
-                    .OfType<Rectangle>()
-                    .Where(r => Equals(r.Tag, "AiHighlight"))
-                    .ToList();
-
-            foreach (Rectangle highlight in oldHighlights)
-            {
-                cnvBoard.Children.Remove(highlight);
-            }
+            ClearAIHighlights();
 
             double squareSize = cnvBoard.Width / 8;
 
