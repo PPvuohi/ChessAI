@@ -51,6 +51,7 @@ namespace ChessAI
 
             // Näytetään tekoälyn valitsema siirto laudalla
             HighlightAiMove(result.BestMoveData);
+            ClearMessages();
 
             MessageBox.Show(
                 $"Paras siirto: {result.BestMove}\n" +
