@@ -74,7 +74,8 @@
                         Background="Transparent"
                     MouseLeftButtonDown="cnvBlackPieces_MouseLeftButtonDown"/>
             </Grid>
-            <Border Margin="5" BorderBrush="Gold" BorderThickness="5" VerticalAlignment="Center">
+            <Border Style="{StaticResource BoardOuterBorder}" Margin="5" VerticalAlignment="Center">
+            <Border Style="{StaticResource BoardInnerBorder}">
                 <Grid>
                     <Grid.Resources>
                         <Style TargetType="TextBlock">
@@ -183,6 +184,7 @@
                         <Image x:Name="blackRook2" Source="Graphics/black_rook.png" Width="50" Height="50" Visibility="Hidden"/>
                     </Canvas>
                 </Grid>
+            </Border>
             </Border>
         </DockPanel>
     </DockPanel>
