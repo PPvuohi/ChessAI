@@ -74,8 +74,16 @@
                         Background="Transparent"
                     MouseLeftButtonDown="cnvBlackPieces_MouseLeftButtonDown"/>
             </Grid>
-            <Border Margin="5" BorderBrush="Black" BorderThickness="5" VerticalAlignment="Center">
+            <Border Margin="5" BorderBrush="Gold" BorderThickness="5" VerticalAlignment="Center">
                 <Grid>
+                    <Grid.Resources>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="FontSize" Value="16"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                            <Setter Property="Margin" Value="4"/>
+                        </Style>
+                    </Grid.Resources>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                         <ColumnDefinition/>
@@ -100,38 +108,38 @@
                         <RowDefinition/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
-                    <Label Content="A" FontWeight="Bold" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Label Content="B" FontWeight="Bold" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Label Content="C" FontWeight="Bold" Grid.Row="0" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Label Content="D" FontWeight="Bold" Grid.Row="0" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Label Content="E" FontWeight="Bold" Grid.Row="0" Grid.Column="5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Label Content="F" FontWeight="Bold" Grid.Row="0" Grid.Column="6" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Label Content="G" FontWeight="Bold" Grid.Row="0" Grid.Column="7" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Label Content="H" FontWeight="Bold" Grid.Row="0" Grid.Column="8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Label Content="A" FontWeight="Bold" Grid.Row="9" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Label Content="B" FontWeight="Bold" Grid.Row="9" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Label Content="C" FontWeight="Bold" Grid.Row="9" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Label Content="D" FontWeight="Bold" Grid.Row="9" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Label Content="E" FontWeight="Bold" Grid.Row="9" Grid.Column="5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Label Content="F" FontWeight="Bold" Grid.Row="9" Grid.Column="6" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Label Content="G" FontWeight="Bold" Grid.Row="9" Grid.Column="7" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Label Content="H" FontWeight="Bold" Grid.Row="9" Grid.Column="8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Label Content="8" FontWeight="Bold" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Label Content="7" FontWeight="Bold" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Label Content="6" FontWeight="Bold" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Label Content="5" FontWeight="Bold" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Label Content="4" FontWeight="Bold" Grid.Row="5" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Label Content="3" FontWeight="Bold" Grid.Row="6" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Label Content="2" FontWeight="Bold" Grid.Row="7" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Label Content="1" FontWeight="Bold" Grid.Row="8" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Label Content="8" FontWeight="Bold" Grid.Row="1" Grid.Column="9" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Label Content="7" FontWeight="Bold" Grid.Row="2" Grid.Column="9" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Label Content="6" FontWeight="Bold" Grid.Row="3" Grid.Column="9" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Label Content="5" FontWeight="Bold" Grid.Row="4" Grid.Column="9" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Label Content="4" FontWeight="Bold" Grid.Row="5" Grid.Column="9" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Label Content="3" FontWeight="Bold" Grid.Row="6" Grid.Column="9" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Label Content="2" FontWeight="Bold" Grid.Row="7" Grid.Column="9" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Label Content="1" FontWeight="Bold" Grid.Row="8" Grid.Column="9" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="A" FontWeight="Bold" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="B" FontWeight="Bold" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="C" FontWeight="Bold" Grid.Row="0" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="D" FontWeight="Bold" Grid.Row="0" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="E" FontWeight="Bold" Grid.Row="0" Grid.Column="5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="F" FontWeight="Bold" Grid.Row="0" Grid.Column="6" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="G" FontWeight="Bold" Grid.Row="0" Grid.Column="7" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="H" FontWeight="Bold" Grid.Row="0" Grid.Column="8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="A" FontWeight="Bold" Grid.Row="9" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="B" FontWeight="Bold" Grid.Row="9" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="C" FontWeight="Bold" Grid.Row="9" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="D" FontWeight="Bold" Grid.Row="9" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="E" FontWeight="Bold" Grid.Row="9" Grid.Column="5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="F" FontWeight="Bold" Grid.Row="9" Grid.Column="6" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="G" FontWeight="Bold" Grid.Row="9" Grid.Column="7" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="H" FontWeight="Bold" Grid.Row="9" Grid.Column="8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="8" FontWeight="Bold" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="7" FontWeight="Bold" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="6" FontWeight="Bold" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="5" FontWeight="Bold" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="4" FontWeight="Bold" Grid.Row="5" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="3" FontWeight="Bold" Grid.Row="6" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="2" FontWeight="Bold" Grid.Row="7" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="1" FontWeight="Bold" Grid.Row="8" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="8" FontWeight="Bold" Grid.Row="1" Grid.Column="9" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="7" FontWeight="Bold" Grid.Row="2" Grid.Column="9" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="6" FontWeight="Bold" Grid.Row="3" Grid.Column="9" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="5" FontWeight="Bold" Grid.Row="4" Grid.Column="9" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="4" FontWeight="Bold" Grid.Row="5" Grid.Column="9" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="3" FontWeight="Bold" Grid.Row="6" Grid.Column="9" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="2" FontWeight="Bold" Grid.Row="7" Grid.Column="9" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="1" FontWeight="Bold" Grid.Row="8" Grid.Column="9" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     <Canvas x:Name="cnvBoard" IsHitTestVisible="False" Width="400" Height="400"
                             Grid.Row="1" Grid.RowSpan="8" Grid.Column="1" Grid.ColumnSpan="8"
                             >
