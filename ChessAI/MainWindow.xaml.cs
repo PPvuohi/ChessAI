@@ -7,6 +7,7 @@ using ChessAI.ViewModels;
 using ChessAI.Views;
 using ChessAI.Models;
 using ChessAI.Services;
+using System.Security.Cryptography.X509Certificates;
 
 namespace ChessAI
 {
@@ -15,6 +16,12 @@ namespace ChessAI
     /// </summary>
     public partial class MainWindow : Window
     {
+        public enum Turn
+        {
+            White,
+            Black,
+            Neither
+        }
         private PieceViewmodel? selected = null;
         public MainWindow()
         {
@@ -105,6 +112,7 @@ namespace ChessAI
                     var (row, col) = FindSquare(clickPos, cnvPieces);
                     PlacePiece(toMove.Name, row, col);
                     lblSelected.Content = $"Kohde: {PositionName(row, col)}";
+                    YieldTurn(selected);
                     ClearSelectedHighlights();
                 }
             }
@@ -347,6 +355,29 @@ namespace ChessAI
         {
             lblSelected.Content = "";
         }
+        private void YieldTurn(PieceViewmodel piece)
+        {
+            Turn turn = GetCurrentTurn();
+            if (turn == Turn.Neither)
+                return;
+
+            bool isWhite = piece.IsWhite;
+            if (isWhite && turn == Turn.White)
+                SetTurn(Turn.Black);
+            else if (!isWhite && turn == Turn.Black)
+                SetTurn(Turn.White);
+        }
+        private void SetTurn(Turn turn)
+        {
+            if (turn == Turn.White)
+            {
+                cmbActivePlayer.SelectedItem = cmbItemWhite;
+            }
+            else if (turn == Turn.Black)
+            {
+                cmbActivePlayer.SelectedItem = cmbItemBlack;
+            }
+        }
         private void ClearBoard_Click(object sender, RoutedEventArgs e)
         {
             ClearSelectedHighlights();
@@ -427,24 +458,24 @@ namespace ChessAI
                 }
             }
 
-            if (cmbActivePlayer.SelectedItem is ComboBoxItem playerItem)
-            {
-                string player =
-                    playerItem.Content?.ToString() ?? "";
-
-                position.WhiteToMove =
-                    !player.Contains(
-                        "musta",
-                        StringComparison.OrdinalIgnoreCase);
-            }
-            else
-            {
-                position.WhiteToMove = true;
-            }
+            position.WhiteToMove = GetCurrentTurn() != Turn.Black;
 
             return position;
         }
 
+        public Turn GetCurrentTurn()
+        {
+            if (cmbActivePlayer.SelectedItem is ComboBoxItem playerItem)
+            {
+                if (playerItem == cmbItemBlack)
+                    return Turn.Black;
+                else if (playerItem == cmbItemWhite)
+                    return Turn.White;
+                else
+                    return Turn.Neither;
+            }
+            return Turn.Neither;
+        }
         // Muutetaan käyttöliittymän nappulan nimi tekoälyn käyttämäksi merkiksi
         private char GetPieceSymbol(string name)
         {

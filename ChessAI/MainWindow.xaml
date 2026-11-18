@@ -23,8 +23,9 @@
                         <ComboBox x:Name="cmbActivePlayer" Width="70" Margin="1,0,0,0" SelectionChanged="cmbActivePlayer_SelectionChanged"
                                 VerticalAlignment="Center" VerticalContentAlignment="Center"
                                 HorizontalContentAlignment="Left">
-                            <ComboBoxItem Content="Valkea" Selector.IsSelected="True"/>
-                            <ComboBoxItem Content="Musta"/>
+                            <ComboBoxItem Content="Valkea" x:Name="cmbItemWhite" Selector.IsSelected="True"/>
+                            <ComboBoxItem Content="Musta" x:Name="cmbItemBlack"/>
+                            <ComboBoxItem Content="vapaa" x:Name="cmbItemNeither"/>
                         </ComboBox>
                     </StackPanel>
                 </Border>

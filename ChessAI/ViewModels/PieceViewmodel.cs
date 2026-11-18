@@ -44,7 +44,8 @@ namespace ChessAI.ViewModels
         public bool OnBoard { get; set; } = false;
         public FrameworkElement? ScreenObj { get; set; }
         public Canvas? Container { get; set; }
-        
+        public bool IsWhite => Name.StartsWith("white");
+
         public int Row
         {
             get => _row;
