@@ -7,6 +7,7 @@ using ChessAI.ViewModels;
 using ChessAI.Views;
 using ChessAI.Models;
 using ChessAI.Services;
+using System.Runtime;
 
 namespace ChessAI
 {
@@ -96,7 +97,28 @@ namespace ChessAI
         {
             lblSelected.Content = "";
             Point clickPos = e.GetPosition(cnvPieces);
+            var (row, col) = FindSquare(clickPos, cnvPieces);
             FrameworkElement? piece = FindPieceAtPos(clickPos, cnvPieces);
+            PieceViewmodel? targeted;
+            if (selected != null && piece != null)
+            {
+                targeted = new()
+                {
+                    Name = piece.Name,
+                    Col = col,
+                    Row = row,
+                    OnBoard = true,
+                    ScreenObj = piece,
+                    Container = cnvPieces
+                };
+                if (selected.IsWhite != targeted.IsWhite)
+                {
+                    cnvPieces.Children.Remove(piece);
+                    AddToTray(targeted.IsWhite ? cnvWhitePieces : cnvBlackPieces, piece);
+                    piece = null;
+                }
+
+            }
             if (piece == null && selected != null)
             {
                 if (selected.Container != cnvPieces)
@@ -108,17 +130,16 @@ namespace ChessAI
                 FrameworkElement? toMove = FindPieceByName(selected.Name, cnvPieces);
                 if (toMove != null)
                 { 
-                    var (row, col) = FindSquare(clickPos, cnvPieces);
                     PlacePiece(toMove.Name, row, col);
                     lblSelected.Content = $"Kohde: {PositionName(row, col)}";
                     YieldTurn(selected);
+                    selected = null;
                     ClearSelectedHighlights();
                 }
             }
             else if (piece != null)
             {
-                var (row, col) = FindSquare(clickPos, cnvPieces);
-                selected = new ViewModels.PieceViewmodel()
+                selected = new PieceViewmodel()
                 {
                     Name = piece.Name,
                     Col = col,
