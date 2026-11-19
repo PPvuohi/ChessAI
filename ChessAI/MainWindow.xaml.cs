@@ -151,7 +151,8 @@ namespace ChessAI
                             FromCol = selected.Col,
                             ToRow = row,
                             ToCol = col,
-                            Piece = selected.Id
+                            Piece = selected.Id,
+                            Capture = !string.IsNullOrEmpty(captured)
                         });
                     YieldTurn(selected);
                     selected = null;
@@ -395,7 +396,10 @@ namespace ChessAI
         }
         private void AddMoveToHistory(Turn turn, Move move)
         {
-            string moveString = $"{(Char.ToLower(move.Piece) == 'p' ? "" : Char.ToUpper(move.Piece))}{PositionName(move.FromRow, move.FromCol)}-{PositionName(move.ToRow, move.ToCol)}";
+            string moveString = $"{(Char.ToLower(move.Piece) == 'p' ? "" : Char.ToUpper(move.Piece))}";
+            if (move.Capture)
+                moveString += "x";
+            moveString += $"{PositionName(move.FromRow, move.FromCol)}-{PositionName(move.ToRow, move.ToCol)}";
             if (turn == Turn.White)
                 txbMovesWhite.Text += moveString + "\n";
             else if (turn == Turn.Black)
