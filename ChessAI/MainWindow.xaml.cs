@@ -23,10 +23,12 @@ namespace ChessAI
             Neither
         }
         private PieceViewmodel? selected = null;
+        private ThinkingWindow thinkWindow;
         public MainWindow()
         {
             InitializeComponent();
-            new ThinkingWindow(this).Show();
+            thinkWindow = new ThinkingWindow(this);
+            thinkWindow.Show();
         }
 
         private void Think_Click(object sender, RoutedEventArgs e)
@@ -574,6 +576,10 @@ namespace ChessAI
             cnvBoard.Children.Add(highlight);
         }
 
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            thinkWindow?.Close();
+        }
     }
 
 }
