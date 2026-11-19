@@ -194,6 +194,7 @@ namespace ChessAI
                 AddToTray(targetContainer, selected.ScreenObj);
                 selected.Container = targetContainer;
                 ClearSelectedHighlights();
+                selected = null;
             }
             else if (piece != null)
             {
