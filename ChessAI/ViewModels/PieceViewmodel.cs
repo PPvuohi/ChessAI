@@ -45,6 +45,30 @@ namespace ChessAI.ViewModels
         public FrameworkElement? ScreenObj { get; set; }
         public Canvas? Container { get; set; }
         public bool IsWhite => Name.StartsWith("white");
+        public char Id
+        {
+            get {
+                char piece;
+                if (Name.Contains("Pawn", StringComparison.OrdinalIgnoreCase))
+                    piece = 'P';
+                else if (Name.Contains("Knight", StringComparison.OrdinalIgnoreCase))
+                    piece = 'N';
+                else if (Name.Contains("Bishop", StringComparison.OrdinalIgnoreCase))
+                    piece = 'B';
+                else if (Name.Contains("Rook", StringComparison.OrdinalIgnoreCase))
+                    piece = 'R';
+                else if (Name.Contains("Queen", StringComparison.OrdinalIgnoreCase))
+                    piece = 'Q';
+                else if (Name.Contains("King", StringComparison.OrdinalIgnoreCase))
+                    piece = 'K';
+                else
+                    return '.';
+
+                return IsWhite
+                    ? piece
+                    : char.ToLowerInvariant(piece);
+            }
+        }
 
         public int Row
         {

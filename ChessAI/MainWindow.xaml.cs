@@ -7,7 +7,6 @@ using ChessAI.ViewModels;
 using ChessAI.Views;
 using ChessAI.Models;
 using ChessAI.Services;
-using System.Runtime;
 
 namespace ChessAI
 {
@@ -67,6 +66,7 @@ namespace ChessAI
                 $"Arvio: {result.BestScore}\n" +
                 $"Tutkitut asemat: {result.NodesVisited}");
         }
+
         private void NewGame_Click(object sender, RoutedEventArgs e)
         {
             SetupBoard();
@@ -127,7 +127,8 @@ namespace ChessAI
             }
             if (piece == null && selected != null)
             {
-                if (selected.Container != cnvPieces)
+                bool fromTray = selected.Container != cnvPieces;
+                if (fromTray)
                 {
                     selected.Container?.Children.Remove(selected.ScreenObj);
                     cnvPieces.Children.Add(selected.ScreenObj);
@@ -137,13 +138,22 @@ namespace ChessAI
                 if (toMove != null)
                 { 
                     PlacePiece(toMove.Name, row, col);
-                    if (captured != null)
-                        lblSelected.Content = $"Lyöty: {PositionName(row, col)} ({captured})";
-                    else
+                    if (string.IsNullOrEmpty(captured))
                         lblSelected.Content = $"Kohde: {PositionName(row, col)}";
+                    else
+                        lblSelected.Content = $"Lyöty: {PositionName(row, col)} ({captured})";
+                    ClearSelectedHighlights();
+                    if (!fromTray && GetCurrentTurn() != Turn.Neither)
+                        AddMoveToHistory(GetCurrentTurn(), new Move()
+                        {
+                            FromRow = selected.Row,
+                            FromCol = selected.Col,
+                            ToRow = row,
+                            ToCol = col,
+                            Piece = selected.Id
+                        });
                     YieldTurn(selected);
                     selected = null;
-                    ClearSelectedHighlights();
                 }
             }
             else if (targeted != null)
@@ -158,6 +168,7 @@ namespace ChessAI
                 }
             }
         }
+
         private void cnvWhitePieces_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             TrayInteraction(cnvWhitePieces, e.GetPosition(cnvWhitePieces));
@@ -375,12 +386,21 @@ namespace ChessAI
         {
             if (row < 1 || col < 1 || row > 8 || col > 8)
                 return "mahoton";
-            return $"{(char)((int)'A' + col - 1)}{row}";
+            return $"{(char)((int)'a' + col - 1)}{row}";
         }
         private void ClearMessages()
         {
             lblSelected.Content = "";
         }
+        private void AddMoveToHistory(Turn turn, Move move)
+        {
+            string moveString = $"{(Char.ToLower(move.Piece) == 'p' ? "" : Char.ToUpper(move.Piece))}{PositionName(move.FromRow, move.FromCol)}-{PositionName(move.ToRow, move.ToCol)}";
+            if (turn == Turn.White)
+                txbMovesWhite.Text += moveString + "\n";
+            else if (turn == Turn.Black)
+                txbMovesBlack.Text += moveString + "\n";
+        }
+
         private void YieldTurn(PieceViewmodel piece)
         {
             Turn turn = GetCurrentTurn();
