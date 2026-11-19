@@ -15,17 +15,21 @@ namespace ChessAI
     /// </summary>
     public partial class MainWindow : Window
     {
-        public enum Turn
+        private MainWindowViewmodel viewModel;
+        private PieceViewmodel? selected
         {
-            White,
-            Black,
-            Neither
+            get => viewModel.Selected;
+            set
+            {
+                viewModel.Selected = value;
+            }
         }
-        private PieceViewmodel? selected = null;
         private ThinkingWindow thinkWindow;
         public MainWindow()
         {
             InitializeComponent();
+            viewModel = new();
+            DataContext = viewModel;
             thinkWindow = new ThinkingWindow(this);
             thinkWindow.Show();
         }
@@ -185,7 +189,8 @@ namespace ChessAI
         }
         private void Settings_Click(object sender, RoutedEventArgs e)
         {
-            // TODO
+            if (viewModel != null)
+                viewModel.CurrentTurn = GetCurrentTurn();
         }
 
         private void cnvPieces_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
