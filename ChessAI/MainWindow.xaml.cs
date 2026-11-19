@@ -43,33 +43,122 @@ namespace ChessAI
                 depth = selectedDepth;
             }
 
-            ChessSearchService searchService = new ChessSearchService();
+            string searchMode = "Alpha-Beta";
 
-            // Suoritetaan haku Alpha-Beta-karsintaa käyttäen
-            SearchResult result = searchService.FindBestMove(
+            if (cmbSearchMode.SelectedItem is ComboBoxItem modeItem)
+            {
+                searchMode = modeItem.Content?.ToString() ?? "Alpha-Beta";
+            }
+
+            ClearMessages();
+
+            // Tavallinen Minimax-haku
+            if (searchMode == "Minimax")
+            {
+                ChessSearchService searchService = new ChessSearchService();
+
+                SearchResult result = searchService.FindBestMove(
+                    position,
+                    depth,
+                    false);
+
+                if (result.BestMoveData == null)
+                {
+                    MessageBox.Show("Tekoäly ei löytänyt mahdollista siirtoa.");
+                    return;
+                }
+
+                HighlightAiMove(result.BestMoveData);
+
+                MessageBox.Show(
+                    $"MINIMAX\n\n" +
+                    $"Paras siirto: {result.BestMove}\n" +
+                    $"Arvio: {result.BestScore}\n" +
+                    $"Tutkitut asemat: {result.NodesVisited}");
+
+                return;
+            }
+
+            // Minimax- ja Alpha-Beta-haun vertailu
+            if (searchMode == "Vertailu")
+            {
+                ChessSearchService minimaxService = new ChessSearchService();
+                ChessSearchService alphaBetaService = new ChessSearchService();
+
+                SearchResult minimaxResult = minimaxService.FindBestMove(
+                    position,
+                    depth,
+                    false);
+
+                SearchResult alphaBetaResult = alphaBetaService.FindBestMove(
+                    position,
+                    depth,
+                    true);
+
+                double reduction = 0;
+
+                if (minimaxResult.NodesVisited > 0)
+                {
+                    reduction =
+                        (1.0 - (double)alphaBetaResult.NodesVisited /
+                        minimaxResult.NodesVisited) * 100;
+                }
+
+                if (minimaxResult.BestMoveData == null ||
+                    alphaBetaResult.BestMoveData == null)
+                {
+                    MessageBox.Show("Tekoäly ei löytänyt mahdollista siirtoa.");
+                    return;
+                }
+
+                // Laudalla näytetään Alpha-Beta-haun valitsema siirto
+                HighlightAiMove(alphaBetaResult.BestMoveData);
+
+                MessageBox.Show(
+                    $"MINIMAX\n" +
+                    $"Paras siirto: {minimaxResult.BestMove}\n" +
+                    $"Arvio: {minimaxResult.BestScore}\n" +
+                    $"Tutkitut asemat: {minimaxResult.NodesVisited}\n\n" +
+
+                    $"ALPHA-BETA\n" +
+                    $"Paras siirto: {alphaBetaResult.BestMove}\n" +
+                    $"Arvio: {alphaBetaResult.BestScore}\n" +
+                    $"Tutkitut asemat: {alphaBetaResult.NodesVisited}" +
+                    $"\n\nAlpha-Beta tutki {reduction:F1} % vähemmän asemia.");
+
+                return;
+            }
+
+            // Oletuksena käytetään Alpha-Beta-karsintaa
+            ChessSearchService alphaBetaSearchService = new ChessSearchService();
+
+            SearchResult alphaBetaSearchResult = alphaBetaSearchService.FindBestMove(
                 position,
                 depth,
                 true);
 
-            if (result.BestMoveData == null)
+            if (alphaBetaSearchResult.BestMoveData == null)
             {
                 MessageBox.Show("Tekoäly ei löytänyt mahdollista siirtoa.");
                 return;
             }
 
-            // Näytetään tekoälyn valitsema siirto laudalla
-            HighlightAiMove(result.BestMoveData);
-            ClearMessages();
+            HighlightAiMove(alphaBetaSearchResult.BestMoveData);
 
             MessageBox.Show(
-                $"Paras siirto: {result.BestMove}\n" +
-                $"Arvio: {result.BestScore}\n" +
-                $"Tutkitut asemat: {result.NodesVisited}");
+                $"ALPHA-BETA\n\n" +
+                $"Paras siirto: {alphaBetaSearchResult.BestMove}\n" +
+                $"Arvio: {alphaBetaSearchResult.BestScore}\n" +
+                $"Tutkitut asemat: {alphaBetaSearchResult.NodesVisited}");
         }
 
         private void NewGame_Click(object sender, RoutedEventArgs e)
         {
             SetupBoard();
+
+            // Tyhjennetään siirtohistoria uutta peliä varten
+            txbMovesWhite.Text = "";
+            txbMovesBlack.Text = "";
         }
 
         private void SaveGame_Click(object sender, RoutedEventArgs e)
