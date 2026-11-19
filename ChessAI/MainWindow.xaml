@@ -179,38 +179,38 @@
                             Grid.Row="1" Grid.RowSpan="8" Grid.Column="1" Grid.ColumnSpan="8"
                             MouseLeftButtonDown="cnvPieces_MouseLeftButtonDown">
                         <!-- nappulat asetetaan oikeille paikoille ohjelmallisesti -->
-                        <Image x:Name="whitePawn1" Source="Graphics/white_pawn.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="whitePawn2" Source="Graphics/white_pawn.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="whitePawn3" Source="Graphics/white_pawn.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="whitePawn4" Source="Graphics/white_pawn.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="whitePawn5" Source="Graphics/white_pawn.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="whitePawn6" Source="Graphics/white_pawn.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="whitePawn7" Source="Graphics/white_pawn.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="whitePawn8" Source="Graphics/white_pawn.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="whiteBishop1" Source="Graphics/white_bishop.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="whiteBishop2" Source="Graphics/white_bishop.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="whiteKnight1" Source="Graphics/white_knight.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="whiteKnight2" Source="Graphics/white_knight.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="whiteQueen" Source="Graphics/white_queen.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="whiteKing" Source="Graphics/white_king.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="whiteRook1" Source="Graphics/white_rook.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="whiteRook2" Source="Graphics/white_rook.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="blackPawn1" Source="Graphics/black_pawn.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="blackPawn2" Source="Graphics/black_pawn.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="blackPawn3" Source="Graphics/black_pawn.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="blackPawn4" Source="Graphics/black_pawn.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="blackPawn5" Source="Graphics/black_pawn.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="blackPawn6" Source="Graphics/black_pawn.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="blackPawn7" Source="Graphics/black_pawn.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="blackPawn8" Source="Graphics/black_pawn.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="blackBishop1" Source="Graphics/black_bishop.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="blackBishop2" Source="Graphics/black_bishop.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="blackKnight1" Source="Graphics/black_knight.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="blackKnight2" Source="Graphics/black_knight.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="blackQueen" Source="Graphics/black_queen.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="blackKing" Source="Graphics/black_king.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="blackRook1" Source="Graphics/black_rook.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="blackRook2" Source="Graphics/black_rook.png" Width="50" Height="50" Visibility="Hidden"/>
+                        <Image x:Name="whitePawn1" Source="Graphics/white_pawn.png" Width="50" Height="50" Visibility="Hidden" Tag="Pawn"/>
+                        <Image x:Name="whitePawn2" Source="Graphics/white_pawn.png" Width="50" Height="50" Visibility="Hidden" Tag="Pawn"/>
+                        <Image x:Name="whitePawn3" Source="Graphics/white_pawn.png" Width="50" Height="50" Visibility="Hidden" Tag="Pawn"/>
+                        <Image x:Name="whitePawn4" Source="Graphics/white_pawn.png" Width="50" Height="50" Visibility="Hidden" Tag="Pawn"/>
+                        <Image x:Name="whitePawn5" Source="Graphics/white_pawn.png" Width="50" Height="50" Visibility="Hidden" Tag="Pawn"/>
+                        <Image x:Name="whitePawn6" Source="Graphics/white_pawn.png" Width="50" Height="50" Visibility="Hidden" Tag="Pawn"/>
+                        <Image x:Name="whitePawn7" Source="Graphics/white_pawn.png" Width="50" Height="50" Visibility="Hidden" Tag="Pawn"/>
+                        <Image x:Name="whitePawn8" Source="Graphics/white_pawn.png" Width="50" Height="50" Visibility="Hidden" Tag="Pawn"/>
+                        <Image x:Name="whiteBishop1" Source="Graphics/white_bishop.png" Width="50" Height="50" Visibility="Hidden" Tag="Bishop"/>
+                        <Image x:Name="whiteBishop2" Source="Graphics/white_bishop.png" Width="50" Height="50" Visibility="Hidden" Tag="Bishop"/>
+                        <Image x:Name="whiteKnight1" Source="Graphics/white_knight.png" Width="50" Height="50" Visibility="Hidden" Tag="Knight"/>
+                        <Image x:Name="whiteKnight2" Source="Graphics/white_knight.png" Width="50" Height="50" Visibility="Hidden" Tag="Knight"/>
+                        <Image x:Name="whiteQueen" Source="Graphics/white_queen.png" Width="50" Height="50" Visibility="Hidden" Tag="Queen"/>
+                        <Image x:Name="whiteKing" Source="Graphics/white_king.png" Width="50" Height="50" Visibility="Hidden" Tag="King"/>
+                        <Image x:Name="whiteRook1" Source="Graphics/white_rook.png" Width="50" Height="50" Visibility="Hidden" Tag="Rook"/>
+                        <Image x:Name="whiteRook2" Source="Graphics/white_rook.png" Width="50" Height="50" Visibility="Hidden" Tag="Rook"/>
+                        <Image x:Name="blackPawn1" Source="Graphics/black_pawn.png" Width="50" Height="50" Visibility="Hidden" Tag="Pawn"/>
+                        <Image x:Name="blackPawn2" Source="Graphics/black_pawn.png" Width="50" Height="50" Visibility="Hidden" Tag="Pawn"/>
+                        <Image x:Name="blackPawn3" Source="Graphics/black_pawn.png" Width="50" Height="50" Visibility="Hidden" Tag="Pawn"/>
+                        <Image x:Name="blackPawn4" Source="Graphics/black_pawn.png" Width="50" Height="50" Visibility="Hidden" Tag="Pawn"/>
+                        <Image x:Name="blackPawn5" Source="Graphics/black_pawn.png" Width="50" Height="50" Visibility="Hidden" Tag="Pawn"/>
+                        <Image x:Name="blackPawn6" Source="Graphics/black_pawn.png" Width="50" Height="50" Visibility="Hidden" Tag="Pawn"/>
+                        <Image x:Name="blackPawn7" Source="Graphics/black_pawn.png" Width="50" Height="50" Visibility="Hidden" Tag="Pawn"/>
+                        <Image x:Name="blackPawn8" Source="Graphics/black_pawn.png" Width="50" Height="50" Visibility="Hidden" Tag="Pawn"/>
+                        <Image x:Name="blackBishop1" Source="Graphics/black_bishop.png" Width="50" Height="50" Visibility="Hidden" Tag="Bishop"/>
+                        <Image x:Name="blackBishop2" Source="Graphics/black_bishop.png" Width="50" Height="50" Visibility="Hidden" Tag="Bishop"/>
+                        <Image x:Name="blackKnight1" Source="Graphics/black_knight.png" Width="50" Height="50" Visibility="Hidden" Tag="Knight"/>
+                        <Image x:Name="blackKnight2" Source="Graphics/black_knight.png" Width="50" Height="50" Visibility="Hidden" Tag="Knight"/>
+                        <Image x:Name="blackQueen" Source="Graphics/black_queen.png" Width="50" Height="50" Visibility="Hidden" Tag="Queen"/>
+                        <Image x:Name="blackKing" Source="Graphics/black_king.png" Width="50" Height="50" Visibility="Hidden" Tag="King"/>
+                        <Image x:Name="blackRook1" Source="Graphics/black_rook.png" Width="50" Height="50" Visibility="Hidden" Tag="Rook"/>
+                        <Image x:Name="blackRook2" Source="Graphics/black_rook.png" Width="50" Height="50" Visibility="Hidden" Tag="Rook"/>
                     </Canvas>
                 </Grid>
             </Border>

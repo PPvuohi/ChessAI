@@ -12,9 +12,18 @@ namespace ChessAI.ViewModels
         Black,
         Neither
     }
-    public class MainWindowViewmodel
+    public class MainWindowViewmodel : INotifyPropertyChanged
     {
-        public PieceViewmodel? Selected { get; set; } = null;
+        private PieceViewmodel? _selected = null;
+        public PieceViewmodel? Selected {
+            get => _selected;
+            set
+            {
+                _selected = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(MayPromote));
+            }
+        }
         public Turn CurrentTurn { get; set; } = Turn.White;
         public bool MayPromote
         {
@@ -22,12 +31,15 @@ namespace ChessAI.ViewModels
             {
                 if (Selected == null)
                     return false;
-                if (!(Selected.Name.Contains("Pawn") && Selected.OnBoard))
+                if (!(Char.ToLower(Selected.Id) == 'p' && Selected.OnBoard))
                     return false;
                 if (Selected.IsWhite)
                     return Selected.Row == 8;
                 return Selected.Row == 1;
             }
         }
+        public event PropertyChangedEventHandler? PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string? propertyName = null) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
