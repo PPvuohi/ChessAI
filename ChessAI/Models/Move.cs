@@ -10,6 +10,8 @@
 
         public char Piece { get; set; }
 
+        public bool Capture { get; set; } = false;
+
         public override string ToString()
         {
             return $"({FromRow},{FromCol}) -> ({ToRow},{ToCol})";
