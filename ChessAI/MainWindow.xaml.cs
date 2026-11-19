@@ -98,6 +98,7 @@ namespace ChessAI
         private void cnvPieces_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             lblSelected.Content = "";
+            Turn currentTurn = GetCurrentTurn();
             string? captured = "";
             Point clickPos = e.GetPosition(cnvPieces);
             var (row, col) = FindSquare(clickPos, cnvPieces);
@@ -143,7 +144,7 @@ namespace ChessAI
                     else
                         lblSelected.Content = $"Lyöty: {PositionName(row, col)} ({captured})";
                     ClearSelectedHighlights();
-                    if (!fromTray && GetCurrentTurn() != Turn.Neither)
+                    if (!fromTray && currentTurn != Turn.Neither && (selected.IsWhite == (currentTurn == Turn.White)))
                         AddMoveToHistory(GetCurrentTurn(), new Move()
                         {
                             FromRow = selected.Row,
@@ -158,7 +159,6 @@ namespace ChessAI
             }
             else if (targeted != null)
             {
-                Turn currentTurn = GetCurrentTurn();
                 // toistaiseksi aina sallittu koska vuorojen valvonta hankaloittaa tiettyjä juttuja
                 if (true || currentTurn == Turn.Neither || currentTurn == (targeted.IsWhite ? Turn.White : Turn.Black))
                 {
