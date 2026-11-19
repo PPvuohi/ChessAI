@@ -15,17 +15,21 @@ namespace ChessAI
     /// </summary>
     public partial class MainWindow : Window
     {
-        public enum Turn
+        private MainWindowViewmodel viewModel;
+        private PieceViewmodel? selected
         {
-            White,
-            Black,
-            Neither
+            get => viewModel.Selected;
+            set
+            {
+                viewModel.Selected = value;
+            }
         }
-        private PieceViewmodel? selected = null;
         private ThinkingWindow thinkWindow;
         public MainWindow()
         {
             InitializeComponent();
+            viewModel = new();
+            DataContext = viewModel;
             thinkWindow = new ThinkingWindow(this);
             thinkWindow.Show();
         }
@@ -82,17 +86,18 @@ namespace ChessAI
             // TODO
         }
 
-        private void Depth_Click(object sender, RoutedEventArgs e)
-        {
-            // TODO
-        }
-        private void cmbDepth_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            // TODO
-        }
         private void Settings_Click(object sender, RoutedEventArgs e)
         {
             // TODO
+        }
+
+        private void cmbDepth_SelectionChanged(object sender, RoutedEventArgs e)
+        {
+            // TODO
+        }
+        private void cmbActivePlayer_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            viewModel.CurrentTurn = GetCurrentTurn();
         }
 
         private void cnvPieces_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -473,11 +478,6 @@ namespace ChessAI
                         return;
                     }
                 }
-        }
-
-        private void cmbActivePlayer_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
         }
 
         // Muodostetaan käyttöliittymän nappuloista pelitilanne tekoälylle

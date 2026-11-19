@@ -49,9 +49,10 @@
                 <Separator Margin="10,0,10,0"/>
                 <Button Content="Alkutila" Click="NewGame_Click"/>
                 <Button Content="Tyhjennä" Click="ClearBoard_Click"/>
+                <!-- <Button Content="Korota" Click="Promote_Click" IsEnabled="False"/>  lisätään myöhemmin -->
                 <Separator Margin="10,0,10,0"/>
-                <Button Content="Tallenna peli" Click="SaveGame_Click"/>
-                <Button Content="Lataa peli" Click="LoadGame_Click"/>
+                <Button Content="Tallenna" Click="SaveGame_Click"/>
+                <Button Content="Lataa" Click="LoadGame_Click"/>
                 <Separator Margin="10,0,10,0"/>
                 <Button Content="Asetukset" Click="Settings_Click"/>
             </ToolBar>
