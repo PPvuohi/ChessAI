@@ -161,6 +161,10 @@ namespace ChessAI
             txbMovesBlack.Text = "";
         }
 
+        private void Promote_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
         private void SaveGame_Click(object sender, RoutedEventArgs e)
         {
             // TODO
@@ -694,6 +698,7 @@ namespace ChessAI
         {
             thinkWindow?.Close();
         }
+
     }
 
 }
