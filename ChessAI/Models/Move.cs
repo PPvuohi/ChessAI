@@ -14,7 +14,10 @@
 
         public override string ToString()
         {
-            return $"({FromRow},{FromCol}) -> ({ToRow},{ToCol})";
+            string from = $"{(char)('A' + FromCol)}{8 - FromRow}";
+            string to = $"{(char)('A' + ToCol)}{8 - ToRow}";
+
+            return $"{from} -> {to}";
         }
     }
 }
