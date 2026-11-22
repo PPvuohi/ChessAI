@@ -38,6 +38,11 @@ namespace ChessAI
 
         private void Think_Click(object sender, RoutedEventArgs e)
         {
+            if (GetCurrentTurn() == Turn.Neither)
+            {
+                MessageBox.Show("Valitse vuoroksi musta tai valkea.");
+                return;
+            }
             // Luetaan nykyinen pelitilanne käyttöliittymästä
             BoardState position = CreateBoardStateFromUI();
 
