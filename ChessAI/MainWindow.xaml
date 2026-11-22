@@ -88,7 +88,7 @@
             <TextBlock x:Name="txbMovesBlack" Grid.Row="1" Grid.Column="1" Width="80"/>
         </Grid>
         <Label x:Name="lblSelected" DockPanel.Dock="Bottom" HorizontalAlignment="Center" Margin="10"/>
-        <DockPanel>
+        <DockPanel HorizontalAlignment="Center">
             <Grid DockPanel.Dock="Left" Margin="5" VerticalAlignment="Center">
                 <Canvas x:Name="cnvWhiteBoard" Width="100" Height="400"
                         IsHitTestVisible="False"/>
@@ -103,9 +103,9 @@
                         Background="Transparent"
                     MouseLeftButtonDown="cnvBlackPieces_MouseLeftButtonDown"/>
             </Grid>
-            <Border Style="{StaticResource BoardOuterBorder}" Margin="5" VerticalAlignment="Center">
-            <Border Style="{StaticResource BoardInnerBorder}">
-                <Grid>
+            <Border Style="{StaticResource BoardOuterBorder}" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="Auto">
+            <Border Style="{StaticResource BoardInnerBorder}" Width="Auto">
+                <Grid HorizontalAlignment="Center">
                     <Grid.Resources>
                         <Style TargetType="TextBlock">
                             <Setter Property="Background" Value="Transparent"/>
@@ -115,16 +115,16 @@
                         </Style>
                     </Grid.Resources>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition/>
