@@ -39,6 +39,17 @@
         {
             char piece = Squares[move.FromRow, move.FromCol];
 
+            // Sotilas korotetaan automaattisesti kuningattareksi,
+            // kun se saavuttaa laudan viimeisen rivin.
+            if (piece == 'P' && move.ToRow == 0)
+            {
+                piece = 'Q';
+            }
+            else if (piece == 'p' && move.ToRow == 7)
+            {
+                piece = 'q';
+            }
+
             Squares[move.ToRow, move.ToCol] = piece;
             Squares[move.FromRow, move.FromCol] = '.';
 

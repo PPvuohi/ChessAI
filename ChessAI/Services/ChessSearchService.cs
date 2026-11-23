@@ -10,6 +10,10 @@ namespace ChessAI.Services
 
         private int nodesVisited;
 
+        // Pelin aikaisemmat asemat toistojen tarkistamista varten
+        public IReadOnlyList<BoardState> PositionHistory { get; set; }
+            = new List<BoardState>();
+
         public SearchResult FindBestMove(
             BoardState position,
             int maxDepth,
@@ -29,6 +33,9 @@ namespace ChessAI.Services
 
             int alpha = int.MinValue;
             int beta = int.MaxValue;
+
+            // Muistetaan, johtaako paras siirto aiempaan asemaan.
+            bool bestMoveRepeats = false;
 
             foreach (Move move in moves)
             {
@@ -56,34 +63,47 @@ namespace ChessAI.Services
                         steps);
                 }
 
-                bool isBetter;
+                // Tarkistetaan, onko asema esiintynyt pelissä aiemmin.
+                bool repeatsPosition = false;
 
-                if (position.WhiteToMove)
+                foreach (BoardState previousPosition in PositionHistory)
                 {
-                    isBetter = score > bestScore;
-
-                    if (isBetter)
+                    if (IsSamePosition(nextPosition, previousPosition))
                     {
-                        bestScore = score;
-                        bestMove = move.ToString();
-                        bestMoveData = move;
+                        repeatsPosition = true;
+                        break;
                     }
-
-                    if (useAlphaBeta)
-                        alpha = Math.Max(alpha, bestScore);
                 }
-                else
+
+                bool hasBetterScore = position.WhiteToMove
+                ? score > bestScore
+                : score < bestScore;
+
+                // Tasatilanteessa suositaan siirtoa,
+                // joka ei toista aiempaa asemaa.
+                bool avoidsRepeatOnTie =
+                    score == bestScore &&
+                    bestMoveRepeats &&
+                    !repeatsPosition;
+
+                bool isBetter =
+                    bestMoveData == null ||
+                    hasBetterScore ||
+                    avoidsRepeatOnTie;
+
+                if (isBetter)
                 {
-                    isBetter = score < bestScore;
+                    bestScore = score;
+                    bestMove = move.ToString();
+                    bestMoveData = move;
+                    bestMoveRepeats = repeatsPosition;
+                }
 
-                    if (isBetter)
-                    {
-                        bestScore = score;
-                        bestMove = move.ToString();
-                        bestMoveData = move;
-                    }
-
-                    if (useAlphaBeta)
+                if (useAlphaBeta)
+                {
+                    if (position.WhiteToMove)
+                        alpha = Math.Max(alpha, bestScore);
+                    else
                         beta = Math.Min(beta, bestScore);
                 }
 
@@ -277,6 +297,32 @@ namespace ChessAI.Services
 
                 return bestScore;
             }
+
+        }
+
+        private static bool IsSamePosition(
+             BoardState first,
+             BoardState second)
+        {
+            // Tarkistetaan, kumman pelaajan vuoro on.
+            if (first.WhiteToMove != second.WhiteToMove)
+                return false;
+
+            // Verrataan shakkilaudan kaikkia ruutuja.
+            for (int row = 0; row < 8; row++)
+            {
+                for (int col = 0; col < 8; col++)
+                {
+                    if (first.Squares[row, col] !=
+                        second.Squares[row, col])
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+
         }
     }
 }

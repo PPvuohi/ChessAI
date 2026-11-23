@@ -27,6 +27,10 @@ namespace ChessAI
             }
         }
         private ThinkingWindow thinkWindow;
+
+        // Tallennetaan pelin aikaisemmat asemat
+        private readonly List<BoardState> positionHistory = new();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -66,7 +70,10 @@ namespace ChessAI
             // Tavallinen Minimax-haku
             if (searchMode == "Minimax")
             {
-                ChessSearchService searchService = new ChessSearchService();
+                ChessSearchService searchService = new ChessSearchService
+                {
+                    PositionHistory = positionHistory
+                };
 
                 SearchResult result = searchService.FindBestMove(
                     position,
@@ -93,8 +100,15 @@ namespace ChessAI
             // Minimax- ja Alpha-Beta-haun vertailu
             if (searchMode == "Vertailu")
             {
-                ChessSearchService minimaxService = new ChessSearchService();
-                ChessSearchService alphaBetaService = new ChessSearchService();
+                ChessSearchService minimaxService = new ChessSearchService
+                {
+                    PositionHistory = positionHistory
+                };
+
+                ChessSearchService alphaBetaService = new ChessSearchService
+                {
+                    PositionHistory = positionHistory
+                };
 
                 SearchResult minimaxResult = minimaxService.FindBestMove(
                     position,
@@ -141,7 +155,10 @@ namespace ChessAI
             }
 
             // Oletuksena käytetään Alpha-Beta-karsintaa
-            ChessSearchService alphaBetaSearchService = new ChessSearchService();
+            ChessSearchService alphaBetaSearchService = new ChessSearchService
+            {
+                PositionHistory = positionHistory
+            };
 
             SearchResult alphaBetaSearchResult = alphaBetaSearchService.FindBestMove(
                 position,
@@ -256,6 +273,15 @@ namespace ChessAI
                             Capture = !string.IsNullOrEmpty(captured)
                         });
                     YieldTurn(selected);
+
+                    if (!fromTray &&
+                        currentTurn != Turn.Neither &&
+                        selected.IsWhite == (currentTurn == Turn.White))
+                    {
+                        // Tallennetaan asema oikean pelisiirron jälkeen.
+                        positionHistory.Add(CreateBoardStateFromUI());
+                    }
+
                     selected = null;
                 }
             }
@@ -460,6 +486,9 @@ namespace ChessAI
             // Tyhjennetään siirtohistoria
             txbMovesWhite.Text = "";
             txbMovesBlack.Text = "";
+
+            // Tyhjennetään myös tallennetut peliasemat.
+            positionHistory.Clear();
 
             // pyyhitään muut jutut
             selected = null;
