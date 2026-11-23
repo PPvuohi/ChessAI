@@ -169,23 +169,6 @@ namespace ChessAI
             ClearAll();
         }
 
-        private void Promote_Click(object sender, RoutedEventArgs e)
-        {
-            if (selected == null)
-                return;
-            if (!viewModel.MayPromote)
-                return;
-            Image? piece = (Image?)selected.ScreenObj;
-            if (piece == null)
-                return;
-            PromoteWindow promote = new(selected.IsWhite ? Turn.White : Turn.Black);
-            promote.ShowDialog();
-            if (string.IsNullOrEmpty(promote.ChosenPiece))
-                return;
-            TransformInto(piece, promote.ChosenPiece, selected.IsWhite);
-            selected.Id = GetPieceSymbol(piece);
-            UpdateSelectedLabel();
-        }
         private void SaveGame_Click(object sender, RoutedEventArgs e)
         {
             // TODO
@@ -259,6 +242,8 @@ namespace ChessAI
                         lblSelected.Content = $"Kohde: {PositionName(row, col)}";
                     else
                         lblSelected.Content = $"Lyöty: {PositionName(row, col)} ({captured})";
+                    if (selected.IsWhite && row == 8 || !selected.IsWhite && row == 1)
+                        Promote();
                     ClearSelectedHighlights();
                     if (!fromTray && currentTurn != Turn.Neither && (selected.IsWhite == (currentTurn == Turn.White)))
                         AddMoveToHistory(GetCurrentTurn(), new Move()
@@ -697,6 +682,21 @@ namespace ChessAI
             return white
                 ? pieceSymbol
                 : char.ToLowerInvariant(pieceSymbol);
+        }
+        private void Promote()
+        {
+            if (selected == null)
+                return;
+            Image? piece = (Image?)selected.ScreenObj;
+            if (piece == null)
+                return;
+            PromoteWindow promote = new(selected.IsWhite ? Turn.White : Turn.Black);
+            promote.ShowDialog();
+            if (string.IsNullOrEmpty(promote.ChosenPiece))
+                return;
+            TransformInto(piece, promote.ChosenPiece, selected.IsWhite);
+            selected.Id = GetPieceSymbol(piece);
+            UpdateSelectedLabel();
         }
         private void TransformInto(Image piece, string piecetype, bool white)
         {
