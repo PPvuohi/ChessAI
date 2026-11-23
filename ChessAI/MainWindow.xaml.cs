@@ -178,19 +178,11 @@ namespace ChessAI
             Image? piece = (Image?)selected.ScreenObj;
             if (piece == null)
                 return;
-            string newPiece = "Queen";
-            PromoteWindow promote = new();
+            PromoteWindow promote = new(selected.IsWhite ? Turn.White : Turn.Black);
             promote.ShowDialog();
-            switch (promote.ChosenPiece)
-            {
-                case "N":
-                    newPiece = "Knight";
-                    break;
-                case "Q":
-                    newPiece = "Queen";
-                    break;
-            }
-            TransformInto(piece, newPiece, selected.IsWhite);
+            if (string.IsNullOrEmpty(promote.ChosenPiece))
+                return;
+            TransformInto(piece, promote.ChosenPiece, selected.IsWhite);
             selected.Id = GetPieceSymbol(piece);
             UpdateSelectedLabel();
         }
