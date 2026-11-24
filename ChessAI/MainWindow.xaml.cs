@@ -242,8 +242,10 @@ namespace ChessAI
                         lblSelected.Content = $"Kohde: {PositionName(row, col)}";
                     else
                         lblSelected.Content = $"Lyöty: {PositionName(row, col)} ({captured})";
+                    char? promo = null;
+                    char orig_id = selected.Id;
                     if (selected.IsWhite && row == 8 || !selected.IsWhite && row == 1)
-                        Promote();
+                        promo = Promote();
                     ClearSelectedHighlights();
                     if (!fromTray && currentTurn != Turn.Neither && (selected.IsWhite == (currentTurn == Turn.White)))
                         AddMoveToHistory(GetCurrentTurn(), new Move()
@@ -252,8 +254,9 @@ namespace ChessAI
                             FromCol = selected.Col,
                             ToRow = row,
                             ToCol = col,
-                            Piece = selected.Id,
-                            Capture = !string.IsNullOrEmpty(captured)
+                            Piece = orig_id,
+                            Capture = !string.IsNullOrEmpty(captured),
+                            PromoteTo = promo
                         });
                     YieldTurn(selected);
                     selected = null;
@@ -525,9 +528,14 @@ namespace ChessAI
         private void AddMoveToHistory(Turn turn, Move move)
         {
             string moveString = $"{(Char.ToLower(move.Piece) == 'p' ? "" : Char.ToUpper(move.Piece))}";
+            moveString += $"{PositionName(move.FromRow, move.FromCol)}";
             if (move.Capture)
                 moveString += "x";
-            moveString += $"{PositionName(move.FromRow, move.FromCol)}-{PositionName(move.ToRow, move.ToCol)}";
+            else
+                moveString += "-";
+            moveString += $"{PositionName(move.ToRow, move.ToCol)}";
+            if (move.PromoteTo != null)
+                moveString += Char.ToUpper((Char)move.PromoteTo);
             if (turn == Turn.White)
                 txbMovesWhite.Text += moveString + "\n";
             else if (turn == Turn.Black)
@@ -683,20 +691,21 @@ namespace ChessAI
                 ? pieceSymbol
                 : char.ToLowerInvariant(pieceSymbol);
         }
-        private void Promote()
+        private char? Promote()
         {
             if (selected == null)
-                return;
+                return null;
             Image? piece = (Image?)selected.ScreenObj;
             if (piece == null)
-                return;
+                return null;
             PromoteWindow promote = new(selected.IsWhite ? Turn.White : Turn.Black);
             promote.ShowDialog();
             if (string.IsNullOrEmpty(promote.ChosenPiece))
-                return;
+                return null;
             TransformInto(piece, promote.ChosenPiece, selected.IsWhite);
             selected.Id = GetPieceSymbol(piece);
             UpdateSelectedLabel();
+            return selected.Id;
         }
         private void TransformInto(Image piece, string piecetype, bool white)
         {
