@@ -261,7 +261,7 @@ namespace ChessAI
                         lblSelected.Content = $"Lyöty: {PositionName(row, col)} ({captured})";
                     char? promo = null;
                     char orig_id = selected.Id;
-                    if (selected.IsWhite && row == 8 || !selected.IsWhite && row == 1)
+                    if (Char.ToLower(orig_id) == 'p' && selected.IsWhite && row == 8 || !selected.IsWhite && row == 1)
                         promo = Promote();
                     ClearSelectedHighlights();
                     if (!fromTray && currentTurn != Turn.Neither && (selected.IsWhite == (currentTurn == Turn.White)))
