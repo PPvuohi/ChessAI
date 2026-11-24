@@ -1,0 +1,57 @@
+﻿<Window x:Class="ChessAI.Views.PromoteWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ChessAI.Views"
+        d:DataContext="{d:DesignInstance Type=local:PromoteWindow, IsDesignTimeCreatable=False}"
+        mc:Ignorable="d"
+        Style="{StaticResource MainWindowStyle}"
+        Title="Promote"
+        Height="250"
+        SizeToContent="Width">
+    <DockPanel>
+        <Label Content="Valitse nappula" FontSize="28" HorizontalAlignment="Center" DockPanel.Dock="Top"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Width="500" Margin="10">
+            <Button x:Name="Queen" Width="120" Click="ChoosePiece">
+                <StackPanel>
+                    <Grid>
+                        <Image x:Name="imgQueenW" Source="/Graphics/white_queen.png" Width="50" Height="50" Visibility="{Binding ShowWhite, Mode=OneTime}"/>
+                        <Image x:Name="imgQueenB" Source="/Graphics/black_queen.png" Width="50" Height="50" Visibility="{Binding ShowBlack, Mode=OneTime}"/>
+                    </Grid>
+                    <Label Content="Kuningatar" HorizontalAlignment="Center" FontSize="20"/>
+                </StackPanel>
+            </Button>
+            <Separator Width="5"/>
+            <Button x:Name="Knight" Width="120" Click="ChoosePiece">
+                <StackPanel>
+                    <Grid>
+                        <Image x:Name="imgKnightW" Source="/Graphics/white_knight.png" Width="50" Height="50" Visibility="{Binding ShowWhite, Mode=OneTime}"/>
+                        <Image x:Name="imgKnightB" Source="/Graphics/black_knight.png" Width="50" Height="50" Visibility="{Binding ShowBlack, Mode=OneTime}"/>
+                    </Grid>
+                    <Label Content="Ratsu" HorizontalAlignment="Center" FontSize="20"/>
+                </StackPanel>
+            </Button>
+            <Separator Width="5"/>
+            <Button x:Name="Bishop" Width="120" Click="ChoosePiece">
+                <StackPanel>
+                    <Grid>
+                        <Image x:Name="imgBishopW" Source="/Graphics/white_bishop.png" Width="50" Height="50" Visibility="{Binding ShowWhite, Mode=OneTime}"/>
+                        <Image x:Name="imgBishopB" Source="/Graphics/black_bishop.png" Width="50" Height="50" Visibility="{Binding ShowBlack, Mode=OneTime}"/>
+                    </Grid>
+                    <Label Content="Lähetti" HorizontalAlignment="Center" FontSize="20"/>
+                </StackPanel>
+            </Button>
+            <Separator Width="5"/>
+            <Button x:Name="Rook" Width="120" Click="ChoosePiece">
+                <StackPanel>
+                    <Grid>
+                        <Image x:Name="imgRookW" Source="/Graphics/white_rook.png" Width="50" Height="50" Visibility="{Binding ShowWhite}"/>
+                        <Image x:Name="imgRookB" Source="/Graphics/black_rook.png" Width="50" Height="50" Visibility="{Binding ShowBlack}"/>
+                    </Grid>
+                    <Label Content="Torni" HorizontalAlignment="Center" FontSize="20"/>
+                </StackPanel>
+            </Button>
+        </StackPanel>
+    </DockPanel>
+</Window>

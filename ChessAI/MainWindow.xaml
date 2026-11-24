@@ -61,7 +61,6 @@
                 <Separator Margin="10,0,10,0"/>
                 <Button Content="Alkutila" Click="NewGame_Click"/>
                 <Button Content="Tyhjennä" Click="ClearBoard_Click"/>
-                <Button Content="Korota" Click="Promote_Click" IsEnabled="{Binding MayPromote}"/>
                 <Separator Margin="10,0,10,0"/>
                 <Button Content="Tallenna" Click="SaveGame_Click"/>
                 <Button Content="Lataa" Click="LoadGame_Click"/>
