@@ -6,13 +6,14 @@
         xmlns:local="clr-namespace:ChessAI"
         mc:Ignorable="d"
         Style="{StaticResource MainWindowStyle}"
+        d:DataContext="MainWindowViewmodel"
         ContentRendered="Window_ContentRendered"
         Title="Shakkiprofessori"
-        SizeToContent="WidthAndHeight"
+        SizeToContent="WidthAndHeight" Closing="Window_Closing"
         >
     <DockPanel>
         <ToolBarTray DockPanel.Dock="Top">
-            <ToolBar Width="750">
+            <ToolBar>
                 <Button Content="Mieti"
                         BorderThickness="2"
                         Click="Think_Click"
@@ -23,8 +24,9 @@
                         <ComboBox x:Name="cmbActivePlayer" Width="70" Margin="1,0,0,0" SelectionChanged="cmbActivePlayer_SelectionChanged"
                                 VerticalAlignment="Center" VerticalContentAlignment="Center"
                                 HorizontalContentAlignment="Left">
-                            <ComboBoxItem Content="Valkea" Selector.IsSelected="True"/>
-                            <ComboBoxItem Content="Musta"/>
+                            <ComboBoxItem Content="Valkea" x:Name="cmbItemWhite" Selector.IsSelected="True"/>
+                            <ComboBoxItem Content="Musta" x:Name="cmbItemBlack"/>
+                            <ComboBoxItem Content="vapaa" x:Name="cmbItemNeither"/>
                         </ComboBox>
                     </StackPanel>
                 </Border>
@@ -43,23 +45,46 @@
                             <ComboBoxItem Content="7"/>
                             <ComboBoxItem Content="8"/>
                         </ComboBox>
+                        <Label Content="Hakutapa" VerticalAlignment="Center"/>
+                        <ComboBox x:Name="cmbSearchMode"
+                          Width="90"
+                          Margin="1,0,0,0"
+                          VerticalAlignment="Center"
+                          VerticalContentAlignment="Center"
+                          HorizontalContentAlignment="Left">
+                            <ComboBoxItem Content="Alpha-Beta" Selector.IsSelected="True"/>
+                            <ComboBoxItem Content="Minimax"/>
+                            <ComboBoxItem Content="Vertailu"/>
+                        </ComboBox>
                     </StackPanel>
                 </Border>
                 <Separator Margin="10,0,10,0"/>
                 <Button Content="Alkutila" Click="NewGame_Click"/>
                 <Button Content="Tyhjennä" Click="ClearBoard_Click"/>
+                <Button Content="Korota" Click="Promote_Click" IsEnabled="{Binding MayPromote}"/>
                 <Separator Margin="10,0,10,0"/>
-                <Button Content="Tallenna peli" Click="SaveGame_Click"/>
-                <Button Content="Lataa peli" Click="LoadGame_Click"/>
+                <Button Content="Tallenna" Click="SaveGame_Click"/>
+                <Button Content="Lataa" Click="LoadGame_Click"/>
                 <Separator Margin="10,0,10,0"/>
                 <Button Content="Asetukset" Click="Settings_Click"/>
             </ToolBar>
         </ToolBarTray>
-        <TextBlock x:Name="txbMoves" DockPanel.Dock="Right" Margin="10">
-            <Label Content="Siirrot näkyvät tässä"/>
-        </TextBlock>
+        <Grid DockPanel.Dock="Right" Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Label Content="Valkea" FontWeight="Bold" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center"/>
+            <TextBlock x:Name="txbMovesWhite" Grid.Row="1" Grid.Column="0" Width="80"/>
+            <Label Content="Musta" FontWeight="Bold" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center"/>
+            <TextBlock x:Name="txbMovesBlack" Grid.Row="1" Grid.Column="1" Width="80"/>
+        </Grid>
         <Label x:Name="lblSelected" DockPanel.Dock="Bottom" HorizontalAlignment="Center" Margin="10"/>
-        <DockPanel>
+        <DockPanel HorizontalAlignment="Center">
             <Grid DockPanel.Dock="Left" Margin="5" VerticalAlignment="Center">
                 <Canvas x:Name="cnvWhiteBoard" Width="100" Height="400"
                         IsHitTestVisible="False"/>
@@ -74,8 +99,9 @@
                         Background="Transparent"
                     MouseLeftButtonDown="cnvBlackPieces_MouseLeftButtonDown"/>
             </Grid>
-            <Border Margin="5" BorderBrush="Gold" BorderThickness="5" VerticalAlignment="Center">
-                <Grid>
+            <Border Style="{StaticResource BoardOuterBorder}" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="Auto">
+            <Border Style="{StaticResource BoardInnerBorder}" Width="Auto">
+                <Grid HorizontalAlignment="Center">
                     <Grid.Resources>
                         <Style TargetType="TextBlock">
                             <Setter Property="Background" Value="Transparent"/>
@@ -85,16 +111,16 @@
                         </Style>
                     </Grid.Resources>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition/>
@@ -149,40 +175,41 @@
                             Grid.Row="1" Grid.RowSpan="8" Grid.Column="1" Grid.ColumnSpan="8"
                             MouseLeftButtonDown="cnvPieces_MouseLeftButtonDown">
                         <!-- nappulat asetetaan oikeille paikoille ohjelmallisesti -->
-                        <Image x:Name="whitePawn1" Source="Graphics/white_pawn.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="whitePawn2" Source="Graphics/white_pawn.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="whitePawn3" Source="Graphics/white_pawn.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="whitePawn4" Source="Graphics/white_pawn.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="whitePawn5" Source="Graphics/white_pawn.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="whitePawn6" Source="Graphics/white_pawn.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="whitePawn7" Source="Graphics/white_pawn.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="whitePawn8" Source="Graphics/white_pawn.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="whiteBishop1" Source="Graphics/white_bishop.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="whiteBishop2" Source="Graphics/white_bishop.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="whiteKnight1" Source="Graphics/white_knight.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="whiteKnight2" Source="Graphics/white_knight.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="whiteQueen" Source="Graphics/white_queen.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="whiteKing" Source="Graphics/white_king.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="whiteRook1" Source="Graphics/white_rook.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="whiteRook2" Source="Graphics/white_rook.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="blackPawn1" Source="Graphics/black_pawn.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="blackPawn2" Source="Graphics/black_pawn.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="blackPawn3" Source="Graphics/black_pawn.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="blackPawn4" Source="Graphics/black_pawn.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="blackPawn5" Source="Graphics/black_pawn.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="blackPawn6" Source="Graphics/black_pawn.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="blackPawn7" Source="Graphics/black_pawn.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="blackPawn8" Source="Graphics/black_pawn.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="blackBishop1" Source="Graphics/black_bishop.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="blackBishop2" Source="Graphics/black_bishop.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="blackKnight1" Source="Graphics/black_knight.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="blackKnight2" Source="Graphics/black_knight.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="blackQueen" Source="Graphics/black_queen.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="blackKing" Source="Graphics/black_king.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="blackRook1" Source="Graphics/black_rook.png" Width="50" Height="50" Visibility="Hidden"/>
-                        <Image x:Name="blackRook2" Source="Graphics/black_rook.png" Width="50" Height="50" Visibility="Hidden"/>
+                        <Image x:Name="whitePawn1" Source="Graphics/white_pawn.png" Width="50" Height="50" Visibility="Hidden" Tag="Pawn"/>
+                        <Image x:Name="whitePawn2" Source="Graphics/white_pawn.png" Width="50" Height="50" Visibility="Hidden" Tag="Pawn"/>
+                        <Image x:Name="whitePawn3" Source="Graphics/white_pawn.png" Width="50" Height="50" Visibility="Hidden" Tag="Pawn"/>
+                        <Image x:Name="whitePawn4" Source="Graphics/white_pawn.png" Width="50" Height="50" Visibility="Hidden" Tag="Pawn"/>
+                        <Image x:Name="whitePawn5" Source="Graphics/white_pawn.png" Width="50" Height="50" Visibility="Hidden" Tag="Pawn"/>
+                        <Image x:Name="whitePawn6" Source="Graphics/white_pawn.png" Width="50" Height="50" Visibility="Hidden" Tag="Pawn"/>
+                        <Image x:Name="whitePawn7" Source="Graphics/white_pawn.png" Width="50" Height="50" Visibility="Hidden" Tag="Pawn"/>
+                        <Image x:Name="whitePawn8" Source="Graphics/white_pawn.png" Width="50" Height="50" Visibility="Hidden" Tag="Pawn"/>
+                        <Image x:Name="whiteBishop1" Source="Graphics/white_bishop.png" Width="50" Height="50" Visibility="Hidden" Tag="Bishop"/>
+                        <Image x:Name="whiteBishop2" Source="Graphics/white_bishop.png" Width="50" Height="50" Visibility="Hidden" Tag="Bishop"/>
+                        <Image x:Name="whiteKnight1" Source="Graphics/white_knight.png" Width="50" Height="50" Visibility="Hidden" Tag="Knight"/>
+                        <Image x:Name="whiteKnight2" Source="Graphics/white_knight.png" Width="50" Height="50" Visibility="Hidden" Tag="Knight"/>
+                        <Image x:Name="whiteQueen" Source="Graphics/white_queen.png" Width="50" Height="50" Visibility="Hidden" Tag="Queen"/>
+                        <Image x:Name="whiteKing" Source="Graphics/white_king.png" Width="50" Height="50" Visibility="Hidden" Tag="King"/>
+                        <Image x:Name="whiteRook1" Source="Graphics/white_rook.png" Width="50" Height="50" Visibility="Hidden" Tag="Rook"/>
+                        <Image x:Name="whiteRook2" Source="Graphics/white_rook.png" Width="50" Height="50" Visibility="Hidden" Tag="Rook"/>
+                        <Image x:Name="blackPawn1" Source="Graphics/black_pawn.png" Width="50" Height="50" Visibility="Hidden" Tag="Pawn"/>
+                        <Image x:Name="blackPawn2" Source="Graphics/black_pawn.png" Width="50" Height="50" Visibility="Hidden" Tag="Pawn"/>
+                        <Image x:Name="blackPawn3" Source="Graphics/black_pawn.png" Width="50" Height="50" Visibility="Hidden" Tag="Pawn"/>
+                        <Image x:Name="blackPawn4" Source="Graphics/black_pawn.png" Width="50" Height="50" Visibility="Hidden" Tag="Pawn"/>
+                        <Image x:Name="blackPawn5" Source="Graphics/black_pawn.png" Width="50" Height="50" Visibility="Hidden" Tag="Pawn"/>
+                        <Image x:Name="blackPawn6" Source="Graphics/black_pawn.png" Width="50" Height="50" Visibility="Hidden" Tag="Pawn"/>
+                        <Image x:Name="blackPawn7" Source="Graphics/black_pawn.png" Width="50" Height="50" Visibility="Hidden" Tag="Pawn"/>
+                        <Image x:Name="blackPawn8" Source="Graphics/black_pawn.png" Width="50" Height="50" Visibility="Hidden" Tag="Pawn"/>
+                        <Image x:Name="blackBishop1" Source="Graphics/black_bishop.png" Width="50" Height="50" Visibility="Hidden" Tag="Bishop"/>
+                        <Image x:Name="blackBishop2" Source="Graphics/black_bishop.png" Width="50" Height="50" Visibility="Hidden" Tag="Bishop"/>
+                        <Image x:Name="blackKnight1" Source="Graphics/black_knight.png" Width="50" Height="50" Visibility="Hidden" Tag="Knight"/>
+                        <Image x:Name="blackKnight2" Source="Graphics/black_knight.png" Width="50" Height="50" Visibility="Hidden" Tag="Knight"/>
+                        <Image x:Name="blackQueen" Source="Graphics/black_queen.png" Width="50" Height="50" Visibility="Hidden" Tag="Queen"/>
+                        <Image x:Name="blackKing" Source="Graphics/black_king.png" Width="50" Height="50" Visibility="Hidden" Tag="King"/>
+                        <Image x:Name="blackRook1" Source="Graphics/black_rook.png" Width="50" Height="50" Visibility="Hidden" Tag="Rook"/>
+                        <Image x:Name="blackRook2" Source="Graphics/black_rook.png" Width="50" Height="50" Visibility="Hidden" Tag="Rook"/>
                     </Canvas>
                 </Grid>
+            </Border>
             </Border>
         </DockPanel>
     </DockPanel>

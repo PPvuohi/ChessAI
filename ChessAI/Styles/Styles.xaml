@@ -23,6 +23,15 @@
         <Setter Property="Padding" Value="8,4"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="MinWidth" Value="60"/>
+    </Style>
+    <Style x:Key="BoardOuterBorder" TargetType="Border">
+        <Setter Property="BorderBrush" Value="Black"/>
+        <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+    <Style x:Key="BoardInnerBorder" TargetType="Border">
+        <Setter Property="BorderBrush" Value="Gold"/>
+        <Setter Property="BorderThickness" Value="4"/>
     </Style>
     <Style TargetType="Canvas">
         <Setter Property="Background" Value="Ivory"/>

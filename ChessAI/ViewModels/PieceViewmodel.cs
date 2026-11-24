@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -44,7 +45,9 @@ namespace ChessAI.ViewModels
         public bool OnBoard { get; set; } = false;
         public FrameworkElement? ScreenObj { get; set; }
         public Canvas? Container { get; set; }
-        
+        public bool IsWhite => Name.StartsWith("white");
+        public char Id { get; set; }
+
         public int Row
         {
             get => _row;
@@ -72,19 +75,36 @@ namespace ChessAI.ViewModels
             string ret = "";
             Dictionary<string, string> dict = localisation[lang] ?? new Dictionary<string, string>();
             if (Name.StartsWith("white"))
-                ret = dict["white"] ?? "white";
+                ret = dict.GetValueOrDefault("white", "white");
             else
-                ret = dict["black"] ?? "black";
+                ret = dict.GetValueOrDefault("black", "black");
             ret += " ";
-            foreach (string pieceName in new[] { "Pawn", "Bishop", "Knight", "Rook", "Queen", "King" })
+            string name = "";
+            switch (Char.ToLower(Id))
             {
-                if (Name.Contains(pieceName))
-                {
-                    string name = pieceName.ToLower();
-                    ret += dict[name] ?? name;
+                case 'b':
+                    name = "bishop";
                     break;
-                }
+                case 'k':
+                    name = "king";
+                    break;
+                case 'n':
+                    name = "knight";
+                    break;
+                case 'p':
+                    name = "pawn";
+                    break;
+                case 'q':
+                    name = "queen";
+                    break;
+                case 'r':
+                    name = "rook";
+                    break;
+                default:
+                    name = $"{Id}";
+                    break;
             }
+            ret += dict.GetValueOrDefault(name, name);
             return ret;
         }
     }
