@@ -1,10 +1,9 @@
-﻿using ChessAI.ViewModels;
-using ChessAI.Views;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using ChessAI.ViewModels;
 using ChessAI.Views;
 using ChessAI.Models;
 using ChessAI.Services;
@@ -61,7 +60,6 @@ namespace ChessAI
         private void NewGame_Click(object sender, RoutedEventArgs e)
         {
             SetupBoard();
-            // TODO
         }
 
         private void SaveGame_Click(object sender, RoutedEventArgs e)
@@ -192,6 +190,7 @@ namespace ChessAI
                     cnvBoard.Children.Add(square);
                 }
             }
+            SetupBoard();
         }
         private void FromTrayToBoard(Canvas tray)
         {
@@ -204,6 +203,9 @@ namespace ChessAI
         }
         private void SetupBoard()
         {
+            ClearSelectedHighlights();
+            ClearAIHighlights();
+            ClearMessages();
             FromTrayToBoard(cnvWhitePieces);
             FromTrayToBoard(cnvBlackPieces);
             // asettele nappulat aloituspaikoilleen
@@ -312,6 +314,19 @@ namespace ChessAI
             ClearSelectedHighlight(cnvBlackBoard);
             ClearSelectedHighlight(cnvWhiteBoard);
         }
+        private void ClearAIHighlights()
+        {
+            List<Rectangle> oldHighlights =
+                cnvBoard.Children
+                    .OfType<Rectangle>()
+                    .Where(r => Equals(r.Tag, "AiHighlight"))
+                    .ToList();
+
+            foreach (Rectangle highlight in oldHighlights)
+            {
+                cnvBoard.Children.Remove(highlight);
+            }
+        }
         private void ClearSelectedHighlight(Canvas container)
         {
             List<Rectangle> highlights = container.Children
@@ -327,8 +342,15 @@ namespace ChessAI
                 return "mahoton";
             return $"{(char)((int)'A' + col - 1)}{row}";
         }
+        private void ClearMessages()
+        {
+            lblSelected.Content = "";
+        }
         private void ClearBoard_Click(object sender, RoutedEventArgs e)
         {
+            ClearSelectedHighlights();
+            ClearAIHighlights();
+            ClearMessages();
             List<FrameworkElement> toRemove = [.. cnvPieces.Children.Cast<FrameworkElement>()];
             foreach (FrameworkElement piece in toRemove)
             {
@@ -348,16 +370,26 @@ namespace ChessAI
             if (tray.Children.Contains(piece))
                 return;
             tray.Children.Add(piece);
-            int fillCount = tray.Children.Count;
             double trayWidth = tray.Width;
             double squareSize = trayWidth / 2;
             double halfSquare = squareSize / 2.0;
             double halfWidth = piece.Width / 2.0;
             double halfHeight = piece.Height / 2.0;
-            int col = fillCount > 8 ? 0 : 1;
-            Canvas.SetLeft(piece, col * squareSize + (halfSquare - halfWidth));
-            Canvas.SetTop(piece, (fillCount % 8) * squareSize + (halfSquare - halfWidth));
-            piece.Visibility = Visibility.Visible;
+            FrameworkElement? occupant;
+            Point pos;
+            for (int col = 0; col <= 1; col++)
+                for (int row = 0; row <= 7; row++)
+                {
+                    pos = new(col * squareSize + halfSquare, row * squareSize + halfSquare);
+                    occupant = FindPieceAtPos(pos, tray);
+                    if (occupant == null)   // löytyi tyhjä paikka
+                    {
+                        Canvas.SetLeft(piece, col * squareSize + (halfSquare - halfWidth));
+                        Canvas.SetTop(piece, row * squareSize + (halfSquare - halfWidth));
+                        piece.Visibility = Visibility.Visible;
+                        return;
+                    }
+                }
         }
 
         private void cmbActivePlayer_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -445,16 +477,7 @@ namespace ChessAI
         // Korostetaan tekoälyn valitseman siirron lähtö- ja kohderuutu
         private void HighlightAiMove(Move move)
         {
-            List<Rectangle> oldHighlights =
-                cnvBoard.Children
-                    .OfType<Rectangle>()
-                    .Where(r => Equals(r.Tag, "AiHighlight"))
-                    .ToList();
-
-            foreach (Rectangle highlight in oldHighlights)
-            {
-                cnvBoard.Children.Remove(highlight);
-            }
+            ClearAIHighlights();
 
             double squareSize = cnvBoard.Width / 8;
 
