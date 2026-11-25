@@ -47,11 +47,11 @@
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <Label Content="Hakutapa" VerticalAlignment="Center"/>
                         <ComboBox x:Name="cmbSearchMode"
-                  Width="90"
-                  Margin="1,0,0,0"
-                  VerticalAlignment="Center"
-                  VerticalContentAlignment="Center"
-                  HorizontalContentAlignment="Left">
+                          Width="90"
+                          Margin="1,0,0,0"
+                          VerticalAlignment="Center"
+                          VerticalContentAlignment="Center"
+                          HorizontalContentAlignment="Left">
                             <ComboBoxItem Content="Alpha-Beta" Selector.IsSelected="True"/>
                             <ComboBoxItem Content="Minimax"/>
                             <ComboBoxItem Content="Vertailu"/>
