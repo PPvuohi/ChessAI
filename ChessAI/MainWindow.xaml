@@ -41,10 +41,6 @@
                             <ComboBoxItem Content="3"/>
                             <ComboBoxItem Content="4"/>
                          </ComboBox>
-                    </StackPanel>
-                </Border>
-                <Border BorderBrush="Black" BorderThickness="1" Padding="1,2,1,0">
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <Label Content="Hakutapa" VerticalAlignment="Center"/>
                         <ComboBox x:Name="cmbSearchMode"
                           Width="90"
