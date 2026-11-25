@@ -11,6 +11,7 @@
         public char Piece { get; set; }
 
         public bool Capture { get; set; } = false;
+        public char? PromoteTo { get; set; } = null;
 
         public override string ToString()
         {
