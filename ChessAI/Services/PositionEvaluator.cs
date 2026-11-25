@@ -14,7 +14,11 @@ namespace ChessAI.Services
                 {
                     char piece = position.Squares[row, col];
 
-                    score += GetPieceValue(piece);
+                    // Nappulan materiaaliarvo
+                    score += GetPieceValue(piece) * 100;
+
+                    // Nappulan sijainnista saatava lisäarvo
+                    score += GetPositionBonus(piece, row, col);
                 }
             }
 
@@ -41,6 +45,34 @@ namespace ChessAI.Services
 
                 _ => 0
             };
+        }
+
+        private int GetPositionBonus(char piece, int row, int col)
+        {
+            if (piece == '.')
+                return 0;
+
+            bool isWhite = char.IsUpper(piece);
+            int sign = isWhite ? 1 : -1;
+
+            switch (char.ToUpperInvariant(piece))
+            {
+                case 'P':
+                    // Sotilas saa lisäpisteitä etenemisestä.
+                    int progress = isWhite ? 6 - row : row - 1;
+                    return sign * progress * 5;
+
+                case 'N':
+                    // Ratsu hyötyy keskeisestä sijainnista.
+                    bool nearCenter =
+                        row >= 2 && row <= 5 &&
+                        col >= 2 && col <= 5;
+
+                    return nearCenter ? sign * 10 : 0;
+
+                default:
+                    return 0;
+            }
         }
     }
 }

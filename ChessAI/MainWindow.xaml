@@ -40,11 +40,7 @@
                             <ComboBoxItem Content="2" Selector.IsSelected="True"/>
                             <ComboBoxItem Content="3"/>
                             <ComboBoxItem Content="4"/>
-                            <ComboBoxItem Content="5"/>
-                            <ComboBoxItem Content="6"/>
-                            <ComboBoxItem Content="7"/>
-                            <ComboBoxItem Content="8"/>
-                        </ComboBox>
+                         </ComboBox>
                         <Label Content="Hakutapa" VerticalAlignment="Center"/>
                         <ComboBox x:Name="cmbSearchMode"
                           Width="90"
