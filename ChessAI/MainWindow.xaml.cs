@@ -1,12 +1,14 @@
-﻿using System.ComponentModel;
+﻿using ChessAI.Models;
+using ChessAI.Services;
+using ChessAI.ViewModels;
+using ChessAI.Views;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using ChessAI.ViewModels;
-using ChessAI.Views;
-using ChessAI.Models;
-using ChessAI.Services;
+using System.Xml.Linq;
 
 namespace ChessAI
 {
@@ -15,15 +17,32 @@ namespace ChessAI
     /// </summary>
     public partial class MainWindow : Window
     {
-        private PieceViewmodel? selected = null;
+        private MainWindowViewmodel viewModel;
+        private PieceViewmodel? selected
+        {
+            get => viewModel.Selected;
+            set
+            {
+                viewModel.Selected = value;
+            }
+        }
+        private ThinkingWindow thinkWindow;
         public MainWindow()
         {
             InitializeComponent();
-            new ThinkingWindow(this).Show();
+            viewModel = new();
+            DataContext = viewModel;
+            thinkWindow = new ThinkingWindow(this);
+            thinkWindow.Show();
         }
 
         private void Think_Click(object sender, RoutedEventArgs e)
         {
+            if (GetCurrentTurn() == Turn.Neither)
+            {
+                MessageBox.Show("Valitse vuoroksi musta tai valkea.");
+                return;
+            }
             // Luetaan nykyinen pelitilanne käyttöliittymästä
             BoardState position = CreateBoardStateFromUI();
 
@@ -35,33 +54,134 @@ namespace ChessAI
                 depth = selectedDepth;
             }
 
-            ChessSearchService searchService = new ChessSearchService();
+            string searchMode = "Alpha-Beta";
 
-            // Suoritetaan haku Alpha-Beta-karsintaa käyttäen
-            SearchResult result = searchService.FindBestMove(
+            if (cmbSearchMode.SelectedItem is ComboBoxItem modeItem)
+            {
+                searchMode = modeItem.Content?.ToString() ?? "Alpha-Beta";
+            }
+
+            ClearMessages();
+
+            // Tavallinen Minimax-haku
+            if (searchMode == "Minimax")
+            {
+                ChessSearchService searchService = new ChessSearchService();
+
+                SearchResult result = searchService.FindBestMove(
+                    position,
+                    depth,
+                    false);
+
+                if (result.BestMoveData == null)
+                {
+                    MessageBox.Show("Tekoäly ei löytänyt mahdollista siirtoa.");
+                    return;
+                }
+
+                HighlightAiMove(result.BestMoveData);
+
+                MessageBox.Show(
+                    $"MINIMAX\n\n" +
+                    $"Paras siirto: {result.BestMove}\n" +
+                    $"Arvio: {result.BestScore}\n" +
+                    $"Tutkitut asemat: {result.NodesVisited}");
+
+                return;
+            }
+
+            // Minimax- ja Alpha-Beta-haun vertailu
+            if (searchMode == "Vertailu")
+            {
+                ChessSearchService minimaxService = new ChessSearchService();
+                ChessSearchService alphaBetaService = new ChessSearchService();
+
+                SearchResult minimaxResult = minimaxService.FindBestMove(
+                    position,
+                    depth,
+                    false);
+
+                SearchResult alphaBetaResult = alphaBetaService.FindBestMove(
+                    position,
+                    depth,
+                    true);
+
+                double reduction = 0;
+
+                if (minimaxResult.NodesVisited > 0)
+                {
+                    reduction =
+                        (1.0 - (double)alphaBetaResult.NodesVisited /
+                        minimaxResult.NodesVisited) * 100;
+                }
+
+                if (minimaxResult.BestMoveData == null ||
+                    alphaBetaResult.BestMoveData == null)
+                {
+                    MessageBox.Show("Tekoäly ei löytänyt mahdollista siirtoa.");
+                    return;
+                }
+
+                // Laudalla näytetään Alpha-Beta-haun valitsema siirto
+                HighlightAiMove(alphaBetaResult.BestMoveData);
+
+                MessageBox.Show(
+                    $"MINIMAX\n" +
+                    $"Paras siirto: {minimaxResult.BestMove}\n" +
+                    $"Arvio: {minimaxResult.BestScore}\n" +
+                    $"Tutkitut asemat: {minimaxResult.NodesVisited}\n\n" +
+
+                    $"ALPHA-BETA\n" +
+                    $"Paras siirto: {alphaBetaResult.BestMove}\n" +
+                    $"Arvio: {alphaBetaResult.BestScore}\n" +
+                    $"Tutkitut asemat: {alphaBetaResult.NodesVisited}" +
+                    $"\n\nAlpha-Beta tutki {reduction:F1} % vähemmän asemia.");
+
+                return;
+            }
+
+            // Oletuksena käytetään Alpha-Beta-karsintaa
+            ChessSearchService alphaBetaSearchService = new ChessSearchService();
+
+            SearchResult alphaBetaSearchResult = alphaBetaSearchService.FindBestMove(
                 position,
                 depth,
                 true);
 
-            if (result.BestMoveData == null)
+            if (alphaBetaSearchResult.BestMoveData == null)
             {
                 MessageBox.Show("Tekoäly ei löytänyt mahdollista siirtoa.");
                 return;
             }
 
-            // Näytetään tekoälyn valitsema siirto laudalla
-            HighlightAiMove(result.BestMoveData);
+            HighlightAiMove(alphaBetaSearchResult.BestMoveData);
 
             MessageBox.Show(
-                $"Paras siirto: {result.BestMove}\n" +
-                $"Arvio: {result.BestScore}\n" +
-                $"Tutkitut asemat: {result.NodesVisited}");
+                $"ALPHA-BETA\n\n" +
+                $"Paras siirto: {alphaBetaSearchResult.BestMove}\n" +
+                $"Arvio: {alphaBetaSearchResult.BestScore}\n" +
+                $"Tutkitut asemat: {alphaBetaSearchResult.NodesVisited}");
         }
+
         private void NewGame_Click(object sender, RoutedEventArgs e)
         {
             SetupBoard();
+            ClearAll();
         }
 
+        private void Promote_Click(object sender, RoutedEventArgs e)
+        {
+            if (selected == null)
+                return;
+            if (!viewModel.MayPromote)
+                return;
+            Image? piece = (Image?)selected.ScreenObj;
+            if (piece == null)
+                return;
+            TransformInto(piece, "Queen", selected.IsWhite);
+            selected.Id = GetPieceSymbol(piece);
+            UpdateSelectedLabel();
+        }
         private void SaveGame_Click(object sender, RoutedEventArgs e)
         {
             // TODO
@@ -82,17 +202,46 @@ namespace ChessAI
         }
         private void Settings_Click(object sender, RoutedEventArgs e)
         {
-            // TODO
+            if (viewModel != null)
+                viewModel.CurrentTurn = GetCurrentTurn();
         }
 
         private void cnvPieces_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             lblSelected.Content = "";
+            Turn currentTurn = GetCurrentTurn();
+            string? captured = "";
             Point clickPos = e.GetPosition(cnvPieces);
+            var (row, col) = FindSquare(clickPos, cnvPieces);
             FrameworkElement? piece = FindPieceAtPos(clickPos, cnvPieces);
+            PieceViewmodel? targeted = null;
+            if (piece != null)
+                targeted = new()
+                {
+                    Name = piece.Name,
+                    Col = col,
+                    Row = row,
+                    OnBoard = true,
+                    ScreenObj = piece,
+                    Id = GetPieceSymbol(piece),
+                    Container = cnvPieces
+                };
+            if (selected != null && targeted != null)
+            {
+                if (selected.IsWhite != targeted.IsWhite)
+                {
+                    cnvPieces.Children.Remove(piece);
+                    AddToTray(targeted.IsWhite ? cnvWhitePieces : cnvBlackPieces, targeted.ScreenObj!);
+                    piece = null;
+                    captured = targeted.HumanReadableName();
+                    targeted = null;
+                }
+
+            }
             if (piece == null && selected != null)
             {
-                if (selected.Container != cnvPieces)
+                bool fromTray = selected.Container != cnvPieces;
+                if (fromTray)
                 {
                     selected.Container?.Children.Remove(selected.ScreenObj);
                     cnvPieces.Children.Add(selected.ScreenObj);
@@ -101,28 +250,47 @@ namespace ChessAI
                 FrameworkElement? toMove = FindPieceByName(selected.Name, cnvPieces);
                 if (toMove != null)
                 { 
-                    var (row, col) = FindSquare(clickPos, cnvPieces);
                     PlacePiece(toMove.Name, row, col);
-                    lblSelected.Content = $"Kohde: {PositionName(row, col)}";
+                    if (string.IsNullOrEmpty(captured))
+                        lblSelected.Content = $"Kohde: {PositionName(row, col)}";
+                    else
+                        lblSelected.Content = $"Lyöty: {PositionName(row, col)} ({captured})";
                     ClearSelectedHighlights();
+                    if (!fromTray && currentTurn != Turn.Neither && (selected.IsWhite == (currentTurn == Turn.White)))
+                        AddMoveToHistory(GetCurrentTurn(), new Move()
+                        {
+                            FromRow = selected.Row,
+                            FromCol = selected.Col,
+                            ToRow = row,
+                            ToCol = col,
+                            Piece = selected.Id,
+                            Capture = !string.IsNullOrEmpty(captured)
+                        });
+                    YieldTurn(selected);
+                    selected = null;
                 }
             }
-            else if (piece != null)
+            else if (targeted != null)
             {
-                var (row, col) = FindSquare(clickPos, cnvPieces);
-                selected = new ViewModels.PieceViewmodel()
+                // toistaiseksi aina sallittu koska vuorojen valvonta hankaloittaa tiettyjä juttuja
+                if (true || currentTurn == Turn.Neither || currentTurn == (targeted.IsWhite ? Turn.White : Turn.Black))
                 {
-                    Name = piece.Name,
-                    Col = col,
-                    Row = row,
-                    OnBoard = true,
-                    ScreenObj = piece,
-                    Container = cnvPieces
-                };
-                AddSelectedHighlight(row, col, cnvBoard);
-                lblSelected.Content = $"Valittu: {PositionName(row, col)} ({selected.HumanReadableName()})";
+                    selected = targeted;
+                    AddSelectedHighlight(row, col, cnvBoard);
+                    UpdateSelectedLabel();
+                }
             }
         }
+
+        private void UpdateSelectedLabel()
+        {
+            if (selected == null)
+                return;
+            lblSelected.Content = $"Valittu: {PositionName(selected.Row, selected.Col)} ({selected.HumanReadableName()})";
+            if (viewModel.MayPromote)
+                lblSelected.Content += "\nVoi korottaa";
+        }
+
         private void cnvWhitePieces_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             TrayInteraction(cnvWhitePieces, e.GetPosition(cnvWhitePieces));
@@ -148,6 +316,7 @@ namespace ChessAI
                 AddToTray(targetContainer, selected.ScreenObj);
                 selected.Container = targetContainer;
                 ClearSelectedHighlights();
+                selected = null;
             }
             else if (piece != null)
             {
@@ -156,6 +325,7 @@ namespace ChessAI
                     Name = piece.Name,
                     OnBoard = false,
                     ScreenObj = piece,
+                    Id = GetPieceSymbol(piece),
                     Container = tray
                 };
                 var (row, col) = FindSquare(clickPos, tray);
@@ -203,15 +373,11 @@ namespace ChessAI
         }
         private void SetupBoard()
         {
-            ClearSelectedHighlights();
-            ClearAIHighlights();
-            ClearMessages();
             FromTrayToBoard(cnvWhitePieces);
             FromTrayToBoard(cnvBlackPieces);
             // asettele nappulat aloituspaikoilleen
             int squareSize = (int)cnvBoard.Width / 8;
             double squareCenter = squareSize / 2.0;
-            // keksitään tähän parempi rutiini myöhemmin
             for (int col = 1; col <= 8; col++)
             {
                 // valkoiset sotilaat
@@ -219,6 +385,15 @@ namespace ChessAI
                 // mustat sotilaat
                 PlacePiece($"blackPawn{col}", 7, col);
             }
+            // perutaan promootiot
+            List<Image> pawns = cnvPieces.Children
+                                    .OfType<Image>()
+                                    .Where(r => r.Name.Contains("Pawn"))
+                                    .ToList();
+            foreach (Image pawn in pawns)
+                if (!Equals(pawn.Tag, "Pawn"))
+                    TransformInto(pawn, "Pawn", pawn.Name.StartsWith("white"));
+            // keksitään tähän ehkä parempi rutiini myöhemmin
             PlacePiece("whiteRook1", 1, 1);
             PlacePiece("whiteKnight1", 1, 2);
             PlacePiece("whiteBishop1", 1, 3);
@@ -291,6 +466,18 @@ namespace ChessAI
             int col = (int)(x / squareSize) + 1;
             return (row, col);
         }
+        private void ClearAll()
+        {
+            // Tyhjennetään siirtohistoria
+            txbMovesWhite.Text = "";
+            txbMovesBlack.Text = "";
+
+            // pyyhitään muut jutut
+            selected = null;
+            ClearSelectedHighlights();
+            ClearAIHighlights();
+            ClearMessages();
+        }
         private void AddSelectedHighlight(int row, int col, Canvas container)
         {
             ClearSelectedHighlights();
@@ -340,17 +527,50 @@ namespace ChessAI
         {
             if (row < 1 || col < 1 || row > 8 || col > 8)
                 return "mahoton";
-            return $"{(char)((int)'A' + col - 1)}{row}";
+            return $"{(char)((int)'a' + col - 1)}{row}";
         }
         private void ClearMessages()
         {
             lblSelected.Content = "";
         }
+        private void AddMoveToHistory(Turn turn, Move move)
+        {
+            string moveString = $"{(Char.ToLower(move.Piece) == 'p' ? "" : Char.ToUpper(move.Piece))}";
+            if (move.Capture)
+                moveString += "x";
+            moveString += $"{PositionName(move.FromRow, move.FromCol)}-{PositionName(move.ToRow, move.ToCol)}";
+            if (turn == Turn.White)
+                txbMovesWhite.Text += moveString + "\n";
+            else if (turn == Turn.Black)
+                txbMovesBlack.Text += moveString + "\n";
+        }
+
+        private void YieldTurn(PieceViewmodel piece)
+        {
+            Turn turn = GetCurrentTurn();
+            if (turn == Turn.Neither)
+                return;
+
+            bool isWhite = piece.IsWhite;
+            if (isWhite && turn == Turn.White)
+                SetTurn(Turn.Black);
+            else if (!isWhite && turn == Turn.Black)
+                SetTurn(Turn.White);
+        }
+        private void SetTurn(Turn turn)
+        {
+            if (turn == Turn.White)
+            {
+                cmbActivePlayer.SelectedItem = cmbItemWhite;
+            }
+            else if (turn == Turn.Black)
+            {
+                cmbActivePlayer.SelectedItem = cmbItemBlack;
+            }
+        }
         private void ClearBoard_Click(object sender, RoutedEventArgs e)
         {
-            ClearSelectedHighlights();
-            ClearAIHighlights();
-            ClearMessages();
+            ClearAll();
             List<FrameworkElement> toRemove = [.. cnvPieces.Children.Cast<FrameworkElement>()];
             foreach (FrameworkElement piece in toRemove)
             {
@@ -418,7 +638,7 @@ namespace ChessAI
                 if (row < 0 || row >= 8 || col < 0 || col >= 8)
                     continue;
 
-                char symbol = GetPieceSymbol(piece.Name);
+                char symbol = GetPieceSymbol(piece);
 
                 if (symbol != '.')
                 {
@@ -426,52 +646,59 @@ namespace ChessAI
                 }
             }
 
-            if (cmbActivePlayer.SelectedItem is ComboBoxItem playerItem)
-            {
-                string player =
-                    playerItem.Content?.ToString() ?? "";
-
-                position.WhiteToMove =
-                    !player.Contains(
-                        "musta",
-                        StringComparison.OrdinalIgnoreCase);
-            }
-            else
-            {
-                position.WhiteToMove = true;
-            }
+            position.WhiteToMove = GetCurrentTurn() != Turn.Black;
 
             return position;
         }
 
-        // Muutetaan käyttöliittymän nappulan nimi tekoälyn käyttämäksi merkiksi
-        private char GetPieceSymbol(string name)
+        public Turn GetCurrentTurn()
         {
+            if (cmbActivePlayer.SelectedItem is ComboBoxItem playerItem)
+            {
+                if (playerItem == cmbItemBlack)
+                    return Turn.Black;
+                else if (playerItem == cmbItemWhite)
+                    return Turn.White;
+                else
+                    return Turn.Neither;
+            }
+            return Turn.Neither;
+        }
+        // Määritellään nappulaa vastaava tekoälyn käyttämä merkki
+        private char GetPieceSymbol(FrameworkElement piece)
+        {
+            string name = piece.Name;
             bool white =
                 name.StartsWith(
                     "white",
                     StringComparison.OrdinalIgnoreCase);
 
-            char piece;
+            char pieceSymbol;
 
-            if (name.Contains("Pawn", StringComparison.OrdinalIgnoreCase))
-                piece = 'P';
-            else if (name.Contains("Knight", StringComparison.OrdinalIgnoreCase))
-                piece = 'N';
-            else if (name.Contains("Bishop", StringComparison.OrdinalIgnoreCase))
-                piece = 'B';
-            else if (name.Contains("Rook", StringComparison.OrdinalIgnoreCase))
-                piece = 'R';
-            else if (name.Contains("Queen", StringComparison.OrdinalIgnoreCase))
-                piece = 'Q';
-            else if (name.Contains("King", StringComparison.OrdinalIgnoreCase))
-                piece = 'K';
+            if (Equals(piece.Tag, "Pawn"))
+                pieceSymbol = 'P';
+            else if (Equals(piece.Tag, "Knight"))
+                pieceSymbol = 'N';
+            else if (Equals(piece.Tag, "Bishop"))
+                pieceSymbol = 'B';
+            else if (Equals(piece.Tag, "Rook"))
+                pieceSymbol = 'R';
+            else if (Equals(piece.Tag, "Queen"))
+                pieceSymbol = 'Q';
+            else if (Equals(piece.Tag, "King"))
+                pieceSymbol = 'K';
             else
                 return '.';
 
             return white
-                ? piece
-                : char.ToLowerInvariant(piece);
+                ? pieceSymbol
+                : char.ToLowerInvariant(pieceSymbol);
+        }
+        private void TransformInto(Image piece, string piecetype, bool white)
+        {
+            string uri = $"/Graphics/{(white ? "white" : "black")}_{piecetype.ToLower()}.png";
+            piece.Source = new BitmapImage(new Uri(uri, UriKind.Relative));
+            piece.Tag = piecetype;
         }
 
         // Korostetaan tekoälyn valitseman siirron lähtö- ja kohderuutu
@@ -516,6 +743,11 @@ namespace ChessAI
             Canvas.SetTop(highlight, row * squareSize);
 
             cnvBoard.Children.Add(highlight);
+        }
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            thinkWindow?.Close();
         }
 
     }
