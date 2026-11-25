@@ -36,8 +36,8 @@ namespace ChessAI
             InitializeComponent();
             viewModel = new();
             DataContext = viewModel;
-            thinkWindow = new ThinkingWindow(this);
-            thinkWindow.Show();
+//            thinkWindow = new ThinkingWindow(this);
+//            thinkWindow.Show();
         }
 
         private void Think_Click(object sender, RoutedEventArgs e)
